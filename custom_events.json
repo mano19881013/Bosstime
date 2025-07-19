@@ -16,8 +16,8 @@
   "襲擊戰_1752915723": {
     "id": "襲擊戰_1752915723",
     "name": "襲擊戰",
-    "time": "15:00",
-    "notify_minutes": 0,
+    "time": "15:01",
+    "notify_minutes": 1,
     "repeat_interval": 0,
     "is_perpetual": true,
     "days": [
@@ -29,8 +29,8 @@
   "襲擊戰_1752915736": {
     "id": "襲擊戰_1752915736",
     "name": "襲擊戰",
-    "time": "22:00",
-    "notify_minutes": 0,
+    "time": "22:01",
+    "notify_minutes": 1,
     "repeat_interval": 0,
     "is_perpetual": true,
     "days": [
@@ -49,36 +49,36 @@
     "days": [
       "每日"
     ],
-    "modified": "2025-07-19T09:03:02.283113+00:00",
-    "deleted": false
+    "modified": "2025-07-19T09:44:41.694673+00:00",
+    "deleted": true
   },
   "暗影戰場_1752915810": {
     "id": "暗影戰場_1752915810",
     "name": "暗影戰場",
-    "time": "20:00",
-    "notify_minutes": 0,
+    "time": "20:01",
+    "notify_minutes": 1,
     "repeat_interval": 0,
     "is_perpetual": true,
     "days": [
       "四",
       "日"
     ],
-    "modified": "2025-07-19T09:03:30.297311+00:00",
-    "deleted": false
+    "modified": "2025-07-19T09:44:29.309740+00:00",
+    "deleted": true
   },
   "暗影戰場_1752915828": {
     "id": "暗影戰場_1752915828",
     "name": "暗影戰場",
-    "time": "20:40",
-    "notify_minutes": 0,
+    "time": "20:41",
+    "notify_minutes": 1,
     "repeat_interval": 0,
     "is_perpetual": true,
     "days": [
       "四",
       "日"
     ],
-    "modified": "2025-07-19T09:03:48.611031+00:00",
-    "deleted": false
+    "modified": "2025-07-19T09:44:32.392484+00:00",
+    "deleted": true
   },
   "騎士團副本_1752915864": {
     "id": "騎士團副本_1752915864",
@@ -104,8 +104,8 @@
     "days": [
       "二"
     ],
-    "modified": "2025-07-19T09:04:35.642020+00:00",
-    "deleted": false
+    "modified": "2025-07-19T09:44:30.444848+00:00",
+    "deleted": true
   },
   "TTTT_1752916062": {
     "id": "TTTT_1752916062",
@@ -143,8 +143,8 @@
     "days": [
       "每日"
     ],
-    "modified": "2025-07-19T09:20:28.403434+00:00",
-    "deleted": false
+    "modified": "2025-07-19T09:44:34.524931+00:00",
+    "deleted": true
   },
   "襲擊戰_1752916843": {
     "id": "襲擊戰_1752916843",
@@ -156,7 +156,7 @@
     "days": [
       "每日"
     ],
-    "modified": "2025-07-19T09:20:43.022514+00:00",
-    "deleted": false
+    "modified": "2025-07-19T09:44:44.085318+00:00",
+    "deleted": true
   }
 }
