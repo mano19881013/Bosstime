@@ -1,58 +1,72 @@
 {
   "boss_01": {
-    "time": "13:33",
-    "date": "2025-07-19"
+    "time": "13:54",
+    "date": "2025-07-19",
+    "modified": "2025-07-19T05:37:45.470087Z"
   },
   "boss_02": {
     "time": "14:55",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_03": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_04": {
-    "time": "13:24",
-    "date": "2025-07-19"
+    "time": "13:42",
+    "date": "2025-07-19",
+    "modified": "2025-07-19T05:37:50.712176Z"
   },
   "boss_05": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_06": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_07": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_08": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_09": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_10": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_11": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_12": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_13": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   },
   "boss_14": {
     "time": "13:43",
-    "date": "2025-07-19"
+    "date": "2025-07-19",
+    "modified": null
   }
 }
