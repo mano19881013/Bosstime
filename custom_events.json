@@ -1,28 +1,12 @@
 [
   {
-    "name": "暗影戰場",
+    "uuid": "1086543b-617d-475c-be48-9a83b913b740",
+    "modified": "2025-07-19T07:16:53.731451+00:00",
+    "name": "TT123",
     "time": "20:00",
     "notify_minutes": 0,
-    "days": [
-      "二",
-      "四"
-    ]
-  },
-  {
-    "name": "暗影戰場",
-    "time": "20:40",
-    "notify_minutes": 0,
-    "days": [
-      "二",
-      "四"
-    ]
-  },
-  {
-    "name": "ttttt",
-    "time": "12:42",
-    "notify_minutes": 0,
-    "repeat_interval": 0,
-    "is_perpetual": false,
+    "repeat_interval": 10,
+    "is_perpetual": true,
     "days": [
       "六"
     ]
