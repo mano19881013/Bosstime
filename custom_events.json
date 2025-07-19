@@ -1,15 +1,5 @@
 [
   {
-    "name": "騎士團副本",
-    "time": "21:00",
-    "notify_minutes": 10,
-    "repeat_interval": 0,
-    "is_perpetual": true,
-    "days": [
-      "一"
-    ]
-  },
-  {
     "name": "襲擊戰",
     "time": "22:00",
     "notify_minutes": 0,
@@ -27,6 +17,16 @@
     "is_perpetual": false,
     "days": [
       "每日"
+    ]
+  },
+  {
+    "name": "騎士團副本",
+    "time": "21:00",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "二"
     ]
   }
 ]
