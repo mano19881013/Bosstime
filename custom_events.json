@@ -8,5 +8,15 @@
     "days": [
       "一"
     ]
+  },
+  {
+    "name": "襲擊戰",
+    "time": "22:00",
+    "notify_minutes": 0,
+    "repeat_interval": 0,
+    "is_perpetual": true,
+    "days": [
+      "每日"
+    ]
   }
 ]
