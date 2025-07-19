@@ -117,7 +117,20 @@
     "days": [
       "每日"
     ],
-    "modified": "2025-07-19T09:07:42.948935+00:00",
+    "modified": "2025-07-19T09:10:44.088585+00:00",
+    "deleted": true
+  },
+  "TTTT_1752916263": {
+    "id": "TTTT_1752916263",
+    "name": "TTTT",
+    "time": "17:12",
+    "notify_minutes": 1,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:11:03.993217+00:00",
     "deleted": false
   }
 }
