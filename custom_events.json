@@ -16,5 +16,15 @@
       "二",
       "四"
     ]
+  },
+  {
+    "name": "ttttt",
+    "time": "12:42",
+    "notify_minutes": 0,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "六"
+    ]
   }
 ]
