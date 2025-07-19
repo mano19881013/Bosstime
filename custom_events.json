@@ -1,5 +1,59 @@
-[
-  {
+{
+  "TT123_1752915665": {
+    "uuid": "1086543b-617d-475c-be48-9a83b913b740",
+    "modified": "2025-07-19T09:03:52.409031+00:00",
+    "name": "TT123",
+    "time": "20:00",
+    "notify_minutes": 0,
+    "repeat_interval": 10,
+    "is_perpetual": true,
+    "days": [
+      "六"
+    ],
+    "id": "TT123_1752915665",
+    "deleted": true
+  },
+  "襲擊戰_1752915723": {
+    "id": "襲擊戰_1752915723",
+    "name": "襲擊戰",
+    "time": "15:00",
+    "notify_minutes": 0,
+    "repeat_interval": 0,
+    "is_perpetual": true,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:02:03.915348+00:00",
+    "deleted": false
+  },
+  "襲擊戰_1752915736": {
+    "id": "襲擊戰_1752915736",
+    "name": "襲擊戰",
+    "time": "22:00",
+    "notify_minutes": 0,
+    "repeat_interval": 0,
+    "is_perpetual": true,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:02:16.030218+00:00",
+    "deleted": false
+  },
+  "試煉Boss_1752915782": {
+    "id": "試煉Boss_1752915782",
+    "name": "試煉Boss",
+    "time": "23:00",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": true,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:03:02.283113+00:00",
+    "deleted": false
+  },
+  "暗影戰場_1752915810": {
+    "id": "暗影戰場_1752915810",
     "name": "暗影戰場",
     "time": "20:00",
     "notify_minutes": 0,
@@ -8,9 +62,12 @@
     "days": [
       "四",
       "日"
-    ]
+    ],
+    "modified": "2025-07-19T09:03:30.297311+00:00",
+    "deleted": false
   },
-  {
+  "暗影戰場_1752915828": {
+    "id": "暗影戰場_1752915828",
     "name": "暗影戰場",
     "time": "20:40",
     "notify_minutes": 0,
@@ -19,36 +76,8 @@
     "days": [
       "四",
       "日"
-    ]
-  },
-  {
-    "name": "騎士團副本",
-    "time": "21:00",
-    "notify_minutes": 10,
-    "repeat_interval": 0,
-    "is_perpetual": true,
-    "days": [
-      "二"
-    ]
-  },
-  {
-    "name": "襲擊戰",
-    "time": "22:00",
-    "notify_minutes": 10,
-    "repeat_interval": 0,
-    "is_perpetual": true,
-    "days": [
-      "每日"
-    ]
-  },
-  {
-    "name": "襲擊戰",
-    "time": "15:00",
-    "notify_minutes": 10,
-    "repeat_interval": 0,
-    "is_perpetual": true,
-    "days": [
-      "每日"
-    ]
+    ],
+    "modified": "2025-07-19T09:03:48.611031+00:00",
+    "deleted": false
   }
-]
+}
