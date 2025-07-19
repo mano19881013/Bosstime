@@ -14,7 +14,17 @@
     "time": "22:00",
     "notify_minutes": 0,
     "repeat_interval": 0,
-    "is_perpetual": true,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ]
+  },
+  {
+    "name": "襲擊戰",
+    "time": "15:00",
+    "notify_minutes": 0,
+    "repeat_interval": 0,
+    "is_perpetual": false,
     "days": [
       "每日"
     ]
