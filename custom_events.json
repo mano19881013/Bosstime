@@ -106,5 +106,18 @@
     ],
     "modified": "2025-07-19T09:04:35.642020+00:00",
     "deleted": false
+  },
+  "TTTT_1752916062": {
+    "id": "TTTT_1752916062",
+    "name": "TTTT",
+    "time": "17:09",
+    "notify_minutes": 0,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:07:42.948935+00:00",
+    "deleted": false
   }
 }
