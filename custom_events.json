@@ -222,8 +222,8 @@
       "四",
       "日"
     ],
-    "modified": "2025-07-19T09:50:03.566215+00:00",
-    "deleted": false
+    "modified": "2025-07-20T23:30:01.388220+00:00",
+    "deleted": true
   },
   "暗影戰場_1752918654": {
     "id": "暗影戰場_1752918654",
@@ -237,6 +237,46 @@
       "日"
     ],
     "modified": "2025-07-19T09:50:54.743602+00:00",
+    "deleted": false
+  },
+  "暗影戰場_1753054235": {
+    "id": "暗影戰場_1753054235",
+    "name": "暗影戰場",
+    "time": "20:00",
+    "notify_minutes": 1,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "二",
+      "四"
+    ],
+    "modified": "2025-07-20T23:30:35.106767+00:00",
+    "deleted": false
+  },
+  "世界Boss_1753054290": {
+    "id": "世界Boss_1753054290",
+    "name": "世界Boss",
+    "time": "12:00",
+    "notify_minutes": 8,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-20T23:31:30.665250+00:00",
+    "deleted": false
+  },
+  "世界boss_1753054309": {
+    "id": "世界boss_1753054309",
+    "name": "世界boss",
+    "time": "19:00",
+    "notify_minutes": 8,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-20T23:31:49.252992+00:00",
     "deleted": false
   }
 }
