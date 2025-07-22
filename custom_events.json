@@ -133,31 +133,18 @@
     "modified": "2025-07-19T09:20:05.631564+00:00",
     "deleted": true
   },
-  "襲擊戰_1752916828": {
-    "id": "襲擊戰_1752916828",
+  "襲擊戰_1752918430": {
+    "id": "襲擊戰_1752918430",
     "name": "襲擊戰",
-    "time": "15:01",
+    "time": "22:00",
     "notify_minutes": 1,
     "repeat_interval": 0,
-    "is_perpetual": true,
+    "is_perpetual": false,
     "days": [
       "每日"
     ],
-    "modified": "2025-07-19T09:44:34.524931+00:00",
-    "deleted": true
-  },
-  "襲擊戰_1752916843": {
-    "id": "襲擊戰_1752916843",
-    "name": "襲擊戰",
-    "time": "22:01",
-    "notify_minutes": 1,
-    "repeat_interval": 0,
-    "is_perpetual": true,
-    "days": [
-      "每日"
-    ],
-    "modified": "2025-07-19T09:44:44.085318+00:00",
-    "deleted": true
+    "modified": "2025-07-19T09:47:10.606311+00:00",
+    "deleted": false
   },
   "襲擊戰_1752918407": {
     "id": "襲擊戰_1752918407",
@@ -172,43 +159,44 @@
     "modified": "2025-07-19T09:46:47.637188+00:00",
     "deleted": false
   },
-  "襲擊戰_1752918430": {
-    "id": "襲擊戰_1752918430",
+  "襲擊戰_1752916828": {
+    "id": "襲擊戰_1752916828",
     "name": "襲擊戰",
-    "time": "22:00",
+    "time": "15:01",
+    "notify_minutes": 1,
+    "repeat_interval": 0,
+    "is_perpetual": true,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:44:34.524931+00:00",
+    "deleted": true
+  },
+  "世界Boss_1753054290": {
+    "id": "世界Boss_1753054290",
+    "name": "世界Boss",
+    "time": "12:00",
+    "notify_minutes": 8,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-20T23:31:30.665250+00:00",
+    "deleted": false
+  },
+  "暗影戰場_1752918654": {
+    "id": "暗影戰場_1752918654",
+    "name": "暗影戰場",
+    "time": "20:40",
     "notify_minutes": 1,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
-      "每日"
+      "四",
+      "日"
     ],
-    "modified": "2025-07-19T09:47:10.606311+00:00",
-    "deleted": false
-  },
-  "騎士團副本_1752918479": {
-    "id": "騎士團副本_1752918479",
-    "name": "騎士團副本",
-    "time": "21:00",
-    "notify_minutes": 10,
-    "repeat_interval": 0,
-    "is_perpetual": false,
-    "days": [
-      "二"
-    ],
-    "modified": "2025-07-19T09:47:59.066308+00:00",
-    "deleted": false
-  },
-  "試練BOSS_1752918541": {
-    "id": "試練BOSS_1752918541",
-    "name": "試練BOSS",
-    "time": "23:00",
-    "notify_minutes": 10,
-    "repeat_interval": 0,
-    "is_perpetual": false,
-    "days": [
-      "每日"
-    ],
-    "modified": "2025-07-19T09:49:01.444668+00:00",
+    "modified": "2025-07-19T09:50:54.743602+00:00",
     "deleted": false
   },
   "暗影戰場_1752918603": {
@@ -225,45 +213,17 @@
     "modified": "2025-07-20T23:30:01.388220+00:00",
     "deleted": true
   },
-  "暗影戰場_1752918654": {
-    "id": "暗影戰場_1752918654",
-    "name": "暗影戰場",
-    "time": "20:40",
-    "notify_minutes": 1,
+  "騎士團副本_1752918479": {
+    "id": "騎士團副本_1752918479",
+    "name": "騎士團副本",
+    "time": "21:00",
+    "notify_minutes": 10,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
-      "四",
-      "日"
+      "二"
     ],
-    "modified": "2025-07-19T09:50:54.743602+00:00",
-    "deleted": false
-  },
-  "暗影戰場_1753054235": {
-    "id": "暗影戰場_1753054235",
-    "name": "暗影戰場",
-    "time": "20:00",
-    "notify_minutes": 1,
-    "repeat_interval": 0,
-    "is_perpetual": false,
-    "days": [
-      "二",
-      "四"
-    ],
-    "modified": "2025-07-20T23:30:35.106767+00:00",
-    "deleted": false
-  },
-  "世界Boss_1753054290": {
-    "id": "世界Boss_1753054290",
-    "name": "世界Boss",
-    "time": "12:00",
-    "notify_minutes": 8,
-    "repeat_interval": 0,
-    "is_perpetual": false,
-    "days": [
-      "每日"
-    ],
-    "modified": "2025-07-20T23:31:30.665250+00:00",
+    "modified": "2025-07-19T09:47:59.066308+00:00",
     "deleted": false
   },
   "世界boss_1753054309": {
@@ -277,6 +237,60 @@
       "每日"
     ],
     "modified": "2025-07-20T23:31:49.252992+00:00",
+    "deleted": false
+  },
+  "襲擊戰_1752916843": {
+    "id": "襲擊戰_1752916843",
+    "name": "襲擊戰",
+    "time": "22:01",
+    "notify_minutes": 1,
+    "repeat_interval": 0,
+    "is_perpetual": true,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:44:44.085318+00:00",
+    "deleted": true
+  },
+  "暗影戰場_1753054235": {
+    "id": "暗影戰場_1753054235",
+    "name": "暗影戰場",
+    "time": "20:00",
+    "notify_minutes": 1,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "二",
+      "四"
+    ],
+    "modified": "2025-07-22T12:01:15.045146+00:00",
+    "deleted": true
+  },
+  "試練BOSS_1752918541": {
+    "id": "試練BOSS_1752918541",
+    "name": "試練BOSS",
+    "time": "23:00",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-07-19T09:49:01.444668+00:00",
+    "deleted": false
+  },
+  "暗影戰場_1753185662": {
+    "id": "暗影戰場_1753185662",
+    "name": "暗影戰場",
+    "time": "20:10",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "四",
+      "日"
+    ],
+    "modified": "2025-07-22T12:01:02.565971+00:00",
     "deleted": false
   }
 }
