@@ -6,15 +6,15 @@
     "is_predicted": false
   },
   "boss_02": {
-    "time": "07:11",
+    "time": "19:14",
     "date": "2025-07-22",
-    "modified": "2025-07-21T13:50:40.867526+00:00",
+    "modified": "2025-07-22T02:38:57.883945+00:00",
     "is_predicted": false
   },
   "boss_03": {
-    "time": "08:23",
+    "time": "14:25",
     "date": "2025-07-22",
-    "modified": "2025-07-21T22:46:25.093811+00:00",
+    "modified": "2025-07-22T02:39:02.087762+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -24,9 +24,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "08:12",
+    "time": "14:15",
     "date": "2025-07-22",
-    "modified": "2025-07-21T22:46:33.504061+00:00",
+    "modified": "2025-07-22T02:39:06.136647+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -36,9 +36,9 @@
     "is_predicted": false
   },
   "boss_07": {
-    "time": "10:33",
+    "time": "19:36",
     "date": "2025-07-22",
-    "modified": "2025-07-21T22:46:40.055809+00:00",
+    "modified": "2025-07-22T02:39:10.407126+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -60,9 +60,9 @@
     "is_predicted": false
   },
   "boss_11": {
-    "time": "06:54",
+    "time": "18:54",
     "date": "2025-07-22",
-    "modified": "2025-07-21T13:51:23.131989+00:00",
+    "modified": "2025-07-22T02:39:16.459222+00:00",
     "is_predicted": false
   },
   "boss_12": {
@@ -72,15 +72,15 @@
     "is_predicted": false
   },
   "boss_13": {
-    "time": "10:02",
+    "time": "22:02",
     "date": "2025-07-22",
-    "modified": "2025-07-21T14:57:14.303647+00:00",
+    "modified": "2025-07-22T02:39:19.641056+00:00",
     "is_predicted": false
   },
   "boss_14": {
-    "time": "09:45",
+    "time": "21:59",
     "date": "2025-07-22",
-    "modified": "2025-07-21T13:51:37.048007+00:00",
+    "modified": "2025-07-22T02:39:22.998281+00:00",
     "is_predicted": false
   }
 }
