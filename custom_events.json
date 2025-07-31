@@ -188,15 +188,15 @@
   "暗影戰場_1752918654": {
     "id": "暗影戰場_1752918654",
     "name": "暗影戰場",
-    "time": "21:38",
-    "notify_minutes": 1,
-    "repeat_interval": 0,
+    "time": "21:40",
+    "notify_minutes": 6,
+    "repeat_interval": 3,
     "is_perpetual": false,
     "days": [
       "四",
       "日"
     ],
-    "modified": "2025-07-31T12:11:49.038413+00:00",
+    "modified": "2025-07-31T13:04:02.523097+00:00",
     "deleted": false
   },
   "暗影戰場_1752918603": {
@@ -282,15 +282,15 @@
   "暗影戰場_1753185662": {
     "id": "暗影戰場_1753185662",
     "name": "暗影戰場",
-    "time": "21:08",
+    "time": "21:10",
     "notify_minutes": 10,
-    "repeat_interval": 0,
+    "repeat_interval": 3,
     "is_perpetual": false,
     "days": [
       "四",
       "日"
     ],
-    "modified": "2025-07-31T12:11:17.163153+00:00",
+    "modified": "2025-07-31T13:03:36.855083+00:00",
     "deleted": false
   }
 }
