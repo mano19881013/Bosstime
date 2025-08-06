@@ -292,5 +292,18 @@
     ],
     "modified": "2025-07-31T13:24:35.282592+00:00",
     "deleted": false
+  },
+  "集會所_1754488361": {
+    "name": "集會所",
+    "time": "19:10",
+    "notify_minutes": 3,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-08-06T13:52:41.882068+00:00",
+    "deleted": false,
+    "id": "集會所_1754488361"
   }
 }
