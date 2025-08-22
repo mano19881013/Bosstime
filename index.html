@@ -7,13 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <main>
         <section id="boss-section">
             <h1>遊戲 Boss & 事件追蹤器</h1>
             <div class="controls">
                 <button id="toggle-hidden-btn">顯示已隱藏的 BOSS</button>
-            </div>
+                <button id="manage-events-btn">管理事件</button> </div>
             <h2>本日行程</h2>
             <div id="boss-timers-container" class="container">
                 <p class="loading">正在從 GitHub 讀取資料...</p>
@@ -22,24 +21,44 @@
     </main>
 
     <div id="edit-modal-overlay" class="hidden">
-        <div id="edit-modal">
-            <h3>更新 <span id="modal-boss-name"></span> 的時間</h3>
-            <form id="edit-form">
-                <p>請輸入時間 (可輸入 1234 或 12:34)</p>
-                <input type="text" id="time-input" placeholder="HH:MM" required autocomplete="off">
-                <div class="modal-buttons">
-                    <button type="button" id="cancel-btn">取消</button>
-                    <button type="submit" id="save-btn">儲存</button>
+        <div id="edit-modal"> ... </div>
+    </div>
+
+    <div id="event-manager-overlay" class="hidden">
+        <div id="event-manager-modal">
+            <h2>事件管理</h2>
+            <div id="event-list-container">
                 </div>
-                <div id="modal-feedback" class="hidden">
-                    <div class="spinner"></div>
-                    <p id="modal-message"></p>
+            <hr>
+            <h3>新增 / 編輯事件</h3>
+            <form id="event-form">
+                <input type="hidden" id="event-id-input">
+                <div class="form-group">
+                    <label for="event-name-input">事件名稱</label>
+                    <input type="text" id="event-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-time-input">時間</label>
+                    <input type="time" id="event-time-input" required>
+                </div>
+                <div class="form-group">
+                    <label>重複日</label>
+                    <div id="event-days-checkboxes">
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="event-notify-input">提前幾分鐘提醒</label>
+                    <input type="number" id="event-notify-input" value="5" min="0">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="event-cancel-btn">取消</button>
+                    <button type="submit">儲存事件</button>
                 </div>
             </form>
+             <button type="button" id="close-event-manager-btn">關閉</button>
         </div>
     </div>
 
     <script src="app.js"></script>
-
 </body>
 </html>
