@@ -1,4 +1,4 @@
-// app.js (★加入高LV標記版)
+// app.js (★修正事件篩選邏輯版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -43,6 +43,9 @@ function renderCombinedList(profile, timers, events) {
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayIndex = now.getDay(); // 0=週日, 1=週一, ..., 6=週六
+    const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+    const todayStr = weekDays[todayIndex]; // 取得今天的中文星期，例如 "五"
     
     const createDateTime = (dateStr, timeStr) => {
         if (!dateStr || !timeStr || timeStr === '待確認') return null;
@@ -52,12 +55,12 @@ function renderCombinedList(profile, timers, events) {
     const allBosses = profile.timers.map(boss => {
         let bossData = {};
         if (boss.type === 'fixed') {
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const todayDateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             bossData = { 
                 time: boss.time, 
                 date: '每日固定', 
                 isEditable: false,
-                dateTime: createDateTime(todayStr, boss.time)
+                dateTime: createDateTime(todayDateStr, boss.time)
             };
         } else {
             let remoteData = timers[boss.id] || { time: '待確認', date: '' };
@@ -72,14 +75,17 @@ function renderCombinedList(profile, timers, events) {
         return { ...boss, ...bossData, itemType: 'boss' };
     });
 
+    // 步驟 2: 處理所有事件資料 (★★★ 這裡是修正的地方 ★★★)
     const allEvents = Object.values(events)
         .filter(event => !event.deleted)
+        // ★★★ 新增的篩選邏輯：只保留「每日」或符合今天星期的事件 ★★★
+        .filter(event => event.days.includes('每日') || event.days.includes(todayStr))
         .map(event => {
-            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const todayDateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             return {
                 ...event,
                 itemType: 'event',
-                dateTime: createDateTime(todayStr, event.time)
+                dateTime: createDateTime(todayDateStr, event.time)
             };
         });
 
@@ -109,8 +115,6 @@ function renderCombinedList(profile, timers, events) {
                 card.classList.add('editable');
                 card.addEventListener('click', () => handleEditTime(item.id, item.name));
             }
-            // ★★★ 新增的判斷邏輯在這裡 ★★★
-            // 如果 BOSS 等級 >= 62，就加上 'high-level' 的 class
             if (item.level >= 62) {
                 card.classList.add('high-level');
             }
@@ -134,6 +138,7 @@ function renderCombinedList(profile, timers, events) {
         bossContainer.appendChild(card);
     });
 }
+
 
 async function handleEditTime(bossId, bossName) {
     const userInput = prompt(`請輸入「${bossName}」的新時間 (可輸入 1234 或 12:34)`);
