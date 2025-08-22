@@ -114,3 +114,7 @@ h2 {
 .status-pending {
     color: #dc3545;
 }
+/* ★★★ 新增：高 LV BOSS 的特殊樣式 ★★★ */
+.card.high-level .name {
+    color: #dc3545; /* 使用與「待確認」相同的紅色 */
+}

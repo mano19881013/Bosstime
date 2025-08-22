@@ -1,4 +1,4 @@
-// app.js (★精準時序最終版)
+// app.js (★加入高LV標記版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -35,7 +35,6 @@ async function loadAllData() {
     }
 }
 
-// ★★★ 全新的精準時序渲染與排序函式 ★★★
 function renderCombinedList(profile, timers, events) {
     const bossContainer = document.getElementById('boss-timers-container');
     const eventContainer = document.getElementById('custom-events-container');
@@ -43,31 +42,26 @@ function renderCombinedList(profile, timers, events) {
     eventContainer.innerHTML = '';
 
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); //今天的零點
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
-    // --- 輔助函式：將 YYYY-MM-DD 和 HH:MM 組合成 Date 物件 ---
     const createDateTime = (dateStr, timeStr) => {
         if (!dateStr || !timeStr || timeStr === '待確認') return null;
         return new Date(`${dateStr}T${timeStr}`);
     };
     
-    // 步驟 1: 處理所有 BOSS 資料
     const allBosses = profile.timers.map(boss => {
         let bossData = {};
         if (boss.type === 'fixed') {
-            // 為固定 BOSS 建立今天的日期時間物件
             const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             bossData = { 
                 time: boss.time, 
                 date: '每日固定', 
                 isEditable: false,
-                dateTime: createDateTime(todayStr, boss.time) // 使用今天的日期
+                dateTime: createDateTime(todayStr, boss.time)
             };
-        } else { // floating
+        } else {
             let remoteData = timers[boss.id] || { time: '待確認', date: '' };
             const floatingDateTime = createDateTime(remoteData.date, remoteData.time);
-
-            // 如果浮動 BOSS 時間已過，設為待確認
             if (floatingDateTime && floatingDateTime < now) {
                 remoteData = { time: '待確認', date: '' };
                 bossData = { ...remoteData, isEditable: true, dateTime: null };
@@ -78,7 +72,6 @@ function renderCombinedList(profile, timers, events) {
         return { ...boss, ...bossData, itemType: 'boss' };
     });
 
-    // 步驟 2: 處理所有事件資料
     const allEvents = Object.values(events)
         .filter(event => !event.deleted)
         .map(event => {
@@ -86,30 +79,22 @@ function renderCombinedList(profile, timers, events) {
             return {
                 ...event,
                 itemType: 'event',
-                dateTime: createDateTime(todayStr, event.time) // 所有事件都視為今天
+                dateTime: createDateTime(todayStr, event.time)
             };
         });
 
-    // 步驟 3: 合併 BOSS 和事件，並過濾掉所有已經過去的固定項目
     const combinedList = [...allBosses, ...allEvents].filter(item => {
-        // 如果項目沒有有效的 dateTime (例如待確認)，則保留
         if (!item.dateTime) return true;
-        // 如果項目的 dateTime 早於現在，則過濾掉
         return item.dateTime >= now;
     });
 
-    // 步驟 4: 統一排序
     combinedList.sort((a, b) => {
-        // 待確認的(沒有dateTime)或沒有時間的排在最後
         if (!a.dateTime && b.dateTime) return 1;
         if (a.dateTime && !b.dateTime) return -1;
         if (!a.dateTime && !b.dateTime) return 0;
-
-        // 其他情況直接比較 Date 物件
         return a.dateTime - b.dateTime;
     });
 
-    // 步驟 5: 渲染合併後的列表
     combinedList.forEach(item => {
         const isPending = item.time === '待確認';
         const statusClass = isPending ? 'status-pending' : 'status-confirmed';
@@ -123,6 +108,11 @@ function renderCombinedList(profile, timers, events) {
             if (item.isEditable) {
                 card.classList.add('editable');
                 card.addEventListener('click', () => handleEditTime(item.id, item.name));
+            }
+            // ★★★ 新增的判斷邏輯在這裡 ★★★
+            // 如果 BOSS 等級 >= 62，就加上 'high-level' 的 class
+            if (item.level >= 62) {
+                card.classList.add('high-level');
             }
         } else {
             subInfo = `<div class="sub-info">${item.days.join(', ')}</div>`;
@@ -145,8 +135,36 @@ function renderCombinedList(profile, timers, events) {
     });
 }
 
+async function handleEditTime(bossId, bossName) {
+    const userInput = prompt(`請輸入「${bossName}」的新時間 (可輸入 1234 或 12:34)`);
+    if (userInput === null) return;
+    const newTime = parseAndValidateTime(userInput);
+    if (!newTime) {
+        alert('格式錯誤！請輸入有效的時間，例如 1234, 905 或 12:34。');
+        return;
+    }
+    const updateData = {
+        bossId: bossId,
+        time: newTime
+    };
+    try {
+        alert('正在更新資料，請稍候...');
+        const response = await fetch('/.netlify/functions/update-timer', {
+            method: 'POST',
+            body: JSON.stringify(updateData),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!response.ok) {
+            throw new Error(`伺服器錯誤: ${response.statusText}`);
+        }
+        alert('更新成功！頁面將重新載入以顯示最新時間。');
+        location.reload();
+    } catch (error) {
+        console.error('更新失敗:', error);
+        alert(`更新失敗，請稍後再試。錯誤訊息: ${error.message}`);
+    }
+}
 
-// 時間解析函式 (維持不變)
 function parseAndValidateTime(input) {
     if (!input) return null;
     const standardRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -165,36 +183,4 @@ function parseAndValidateTime(input) {
         if (standardRegex.test(formattedTime)) return formattedTime;
     }
     return null;
-}
-
-// 編輯時間函式 (維持不變)
-async function handleEditTime(bossId, bossName) {
-    const userInput = prompt(`請輸入「${bossName}」的新時間 (可輸入 1234 或 12:34)`);
-    if (userInput === null) return;
-    const newTime = parseAndValidateTime(userInput);
-    if (!newTime) {
-        alert('格式錯誤！請輸入有效的時間，例如 1234, 905 或 12:34。');
-        return;
-    }
-    const updateData = {
-        bossId: bossId,
-        time: newTime
-    };
-
-    try {
-        alert('正在更新資料，請稍候...');
-        const response = await fetch('/.netlify/functions/update-timer', {
-            method: 'POST',
-            body: JSON.stringify(updateData),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-            throw new Error(`伺服器錯誤: ${response.statusText}`);
-        }
-        alert('更新成功！頁面將重新載入以顯示最新時間。');
-        location.reload();
-    } catch (error) {
-        console.error('更新失敗:', error);
-        alert(`更新失敗，請稍後再試。錯誤訊息: ${error.message}`);
-    }
 }
