@@ -1,3 +1,4 @@
 git pull origin main --rebase
 git add .
+git commit -m "1"
 git push

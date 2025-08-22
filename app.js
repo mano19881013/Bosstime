@@ -1,4 +1,4 @@
-// app.js (加入通知功能的最終版本)
+// app.js (★加入 BOSS 提前 3 分鐘通知功能版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -41,14 +41,14 @@ const eventListContainer = document.getElementById('event-list-container');
 
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
-    requestNotificationPermission(); // ★ 新增：請求通知權限
+    requestNotificationPermission();
     loadSettings();
     loadAllData();
     setupEventListeners();
     createDayCheckboxes();
 });
 
-// ★★★ 新增：通知功能相關函式 ★★★
+// --- 通知功能 ---
 function requestNotificationPermission() {
     if (!("Notification" in window)) {
         console.log("這個瀏覽器不支援桌面通知。");
@@ -65,35 +65,25 @@ function requestNotificationPermission() {
 
 function scheduleNotifications(items) {
     if (Notification.permission !== "granted") {
-        return; // 如果沒有權限，就不設定任何通知
+        return;
     }
-
     const now = new Date().getTime();
-    
     items.forEach(item => {
-        // 我們只為有 dateTime 和 notify_minutes 的事件設定通知
-        // 且 notify_minutes 需大於 0
         if (item.dateTime && item.notify_minutes && item.notify_minutes > 0) {
             const notifyTime = item.dateTime.getTime() - (item.notify_minutes * 60 * 1000);
-            
-            // 如果通知時間還沒過去
             if (notifyTime > now) {
                 const delay = notifyTime - now;
                 setTimeout(() => {
-                    // 觸發通知
                     new Notification(`${item.name} 即將開始！`, {
                         body: `事件將於 ${item.notify_minutes} 分鐘後（${item.time}）開始。`,
-                        // 您可以未來在此處加上一個圖示
-                        // icon: './images/notification-icon.png' 
                     });
                 }, delay);
             }
         }
     });
 }
-// ★★★ 通知功能結束 ★★★
 
-
+// --- 核心函式 ---
 const createDateTime = (dateStr, timeStr) => {
     if (!dateStr || !timeStr || timeStr === '待確認') return null;
     return new Date(`${dateStr}T${timeStr}`);
@@ -115,20 +105,20 @@ function setupEventListeners() {
     eventCancelBtn.addEventListener('click', resetEventForm);
 }
 
-// --- LocalStorage ---
 function loadSettings() {
     hiddenBosses = JSON.parse(localStorage.getItem('hiddenBosses') || '[]');
     showHidden = JSON.parse(localStorage.getItem('showHidden') || 'false');
     updateToggleButton();
 }
+
 function saveHiddenBosses() {
     localStorage.setItem('hiddenBosses', JSON.stringify(hiddenBosses));
 }
+
 function saveShowHidden() {
     localStorage.setItem('showHidden', JSON.stringify(showHidden));
 }
 
-// --- 主資料流程 ---
 async function loadAllData() {
     bossContainer.innerHTML = '<p class="loading">正在從 GitHub 讀取資料...</p>';
     try {
@@ -152,9 +142,7 @@ function renderCombinedList(profile, timers, events) {
     bossContainer.innerHTML = '';
     const now = new Date();
     let combinedList = processAndCombineData(profile, timers, events, now);
-    
-    scheduleNotifications(combinedList); // ★ 新增：為載入的資料排程通知
-
+    scheduleNotifications(combinedList);
     if (!showHidden) {
         combinedList = combinedList.filter(item => !(item.itemType === 'boss' && hiddenBosses.includes(item.id)));
     }
@@ -165,11 +153,13 @@ function renderCombinedList(profile, timers, events) {
     startCountdownTimers();
 }
 
+// ★★★ 修改點在這裡 ★★★
 function processAndCombineData(profile, timers, events, now) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayStrFull = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
     const todayStr = weekDays[now.getDay()];
+
     const allBosses = profile.timers.map(boss => {
         let bossData = {};
         if (boss.type === 'fixed') {
@@ -184,12 +174,20 @@ function processAndCombineData(profile, timers, events, now) {
                 bossData = { ...remoteData, isEditable: true, dateTime: floatingDateTime };
             }
         }
-        return { ...boss, ...bossData, itemType: 'boss' };
+        return {
+            ...boss,
+            ...bossData,
+            itemType: 'boss',
+            notify_minutes: 3 // ★ 為所有 BOSS 都加上 3 分鐘的提醒設定 ★
+        };
     });
+
     const allEvents = Object.values(events)
         .filter(event => !event.deleted && (event.days.includes('每日') || event.days.includes(todayStr)))
         .map(event => ({ ...event, itemType: 'event', dateTime: createDateTime(todayStrFull, event.time) }));
+
     const filteredList = [...allBosses, ...allEvents].filter(item => !item.dateTime || item.dateTime >= now);
+
     return filteredList.sort((a, b) => {
         if (!a.dateTime && b.dateTime) return 1;
         if (a.dateTime && !b.dateTime) return -1;
