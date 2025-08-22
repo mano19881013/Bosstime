@@ -1,4 +1,4 @@
-// app.js (★整合優化最終版)
+// app.js (★修正 createDateTime 範圍問題版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAllData();
     setupEventListeners();
 });
+
+// --- ★★★ 修正點：將 createDateTime 移到這裡 ★★★ ---
+// 輔助函式：將 YYYY-MM-DD 和 HH:MM 組合成 Date 物件
+const createDateTime = (dateStr, timeStr) => {
+    if (!dateStr || !timeStr || timeStr === '待確認') return null;
+    return new Date(`${dateStr}T${timeStr}`);
+};
 
 // --- 事件監聽 ---
 function setupEventListeners() {
@@ -80,14 +87,8 @@ function renderCombinedList(profile, timers, events) {
     bossContainer.innerHTML = ''; 
     const now = new Date();
 
-    const createDateTime = (dateStr, timeStr) => {
-        if (!dateStr || !timeStr || timeStr === '待確認') return null;
-        return new Date(`${dateStr}T${timeStr}`);
-    };
-
     let combinedList = processAndCombineData(profile, timers, events, now);
 
-    // ★ 過濾隱藏的 BOSS
     if (!showHidden) {
         combinedList = combinedList.filter(item => !(item.itemType === 'boss' && hiddenBosses.includes(item.id)));
     }
@@ -96,8 +97,6 @@ function renderCombinedList(profile, timers, events) {
         const card = createCardElement(item);
         bossContainer.appendChild(card);
     });
-
-    // 啟動倒數計時器
     startCountdownTimers();
 }
 
@@ -143,7 +142,7 @@ function createCardElement(item) {
     const statusClass = isPending ? 'status-pending' : 'status-confirmed';
     const card = document.createElement('div');
     card.className = 'card';
-    card.dataset.id = item.id; // 方便無刷新更新
+    card.dataset.id = item.id;
 
     let subInfoHTML = '';
     if (item.itemType === 'boss') {
@@ -153,7 +152,6 @@ function createCardElement(item) {
             card.addEventListener('click', () => openEditModal(item.id, item.name, item.time));
         }
         if (item.level >= 62) card.classList.add('high-level');
-        // ★ 新增隱藏按鈕
         card.innerHTML += `<button class="hide-btn" data-id="${item.id}" onclick="handleHideClick(event, '${item.id}')">✕</button>`;
     } else {
         subInfoHTML = `<div class="sub-info">${item.days.join(', ')}</div>`;
@@ -163,7 +161,6 @@ function createCardElement(item) {
     const displayDate = item.date && item.date !== '每日固定' ? item.date.substring(5) : '';
 
     let timeDisplayHTML = `<div class="time-display ${statusClass}">${item.time}</div>`;
-    // ★ 為倒數計時器準備
     if (item.dateTime) {
         timeDisplayHTML += `<div class="date-display" data-countdown-to="${item.dateTime.toISOString()}">--:--:--</div>`;
     } else {
@@ -185,23 +182,19 @@ function createCardElement(item) {
 // --- 倒數計時器功能 ---
 function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
-
     countdownInterval = setInterval(() => {
         const countdownElements = document.querySelectorAll('[data-countdown-to]');
         countdownElements.forEach(el => {
             const targetDate = new Date(el.dataset.countdownTo);
             const now = new Date();
             const diff = targetDate - now;
-
             if (diff <= 0) {
                 el.textContent = "已出現";
                 return;
             }
-
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
             el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         });
     }, 1000);
@@ -217,7 +210,6 @@ function openEditModal(bossId, bossName, currentTime) {
 }
 function closeEditModal() {
     modalOverlay.classList.add('hidden');
-    // 重設 modal 狀態
     modalFeedback.classList.add('hidden');
     saveBtn.disabled = false;
     timeInput.disabled = false;
@@ -227,26 +219,20 @@ async function handleFormSubmit(event) {
     const bossId = modal.dataset.editingId;
     const userInput = timeInput.value;
     const newTime = parseAndValidateTime(userInput);
-
     if (!newTime) {
         showModalMessage('格式錯誤！請輸入 HH:MM', 'error');
         return;
     }
-
-    // ★ 顯示載入中提示
     saveBtn.disabled = true;
     timeInput.disabled = true;
     modalFeedback.classList.remove('hidden');
     showModalMessage('更新中...', '');
-
-    // ★ 無刷新更新 (Optimistic UI)
     const cardToUpdate = document.querySelector(`.card[data-id="${bossId}"]`);
     const originalTimeDisplay = cardToUpdate.querySelector('.time-display');
     const originalCountdown = cardToUpdate.querySelector('.date-display');
     const originalTime = originalTimeDisplay.textContent;
     originalTimeDisplay.textContent = newTime;
     originalCountdown.textContent = '計算中...';
-
     try {
         const response = await fetch('/.netlify/functions/update-timer', {
             method: 'POST',
@@ -254,18 +240,14 @@ async function handleFormSubmit(event) {
             headers: { 'Content-Type': 'application/json' }
         });
         if (!response.ok) throw new Error(`伺服器錯誤: ${response.statusText}`);
-        
-        // 更新成功
         showModalMessage('更新成功！', 'success');
         setTimeout(() => {
             closeEditModal();
-            loadAllData(); // 重新載入以獲取正確倒數時間並重新排序
+            loadAllData();
         }, 1000);
-
     } catch (error) {
         console.error('更新失敗:', error);
         showModalMessage(`更新失敗: ${error.message}`, 'error');
-        // ★ 回復畫面
         originalTimeDisplay.textContent = originalTime;
         originalCountdown.textContent = '';
         setTimeout(closeEditModal, 2000);
@@ -273,13 +255,12 @@ async function handleFormSubmit(event) {
 }
 function showModalMessage(message, type) {
     modalMessage.textContent = message;
-    modalMessage.className = type; // 'success' or 'error'
+    modalMessage.className = type;
 }
-
 
 // --- 使用者個人化設定 ---
 function handleHideClick(event, bossId) {
-    event.stopPropagation(); // 防止觸發編輯視窗
+    event.stopPropagation();
     if (!hiddenBosses.includes(bossId)) {
         hiddenBosses.push(bossId);
         saveHiddenBosses();
@@ -295,7 +276,6 @@ function toggleShowHidden() {
 function updateToggleButton() {
     toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS';
 }
-
 
 // --- 時間解析 ---
 function parseAndValidateTime(input) {
