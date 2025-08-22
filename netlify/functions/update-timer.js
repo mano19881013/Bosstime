@@ -1,60 +1,88 @@
-// netlify/functions/update-timer.js
+// netlify/functions/update-timer.js (★加入智慧日期判斷最終版)
 
 const axios = require('axios');
 
 exports.handler = async function(event, context) {
-    // 只接受 POST 請求
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
     try {
-        // 1. 從前端請求中取得 bossId 和 time
         const { bossId, time } = JSON.parse(event.body);
         if (!bossId || !time) {
             return { statusCode: 400, body: 'Missing bossId or time' };
         }
 
-        // 2. 從環境變數讀取安全資訊
         const { GITHUB_PAT, REPO_OWNER, REPO_NAME } = process.env;
-        const FILE_PATH = 'timers_data.json';
-        const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        const TIMERS_FILE_PATH = 'timers_data.json';
+        const PROFILE_FILE_PATH = 'game_profile.json';
+        const API_BASE_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/`;
         const HEADERS = {
             'Authorization': `token ${GITHUB_PAT}`,
             'Accept': 'application/vnd.github.v3+json'
         };
 
-        // 3. 取得目前檔案的 SHA 和內容
-        const getFileResponse = await axios.get(API_URL, { headers: HEADERS });
-        const currentSha = getFileResponse.data.sha;
-        const contentBase64 = getFileResponse.data.content;
+        const getProfileResponse = await axios.get(API_BASE_URL + PROFILE_FILE_PATH, { headers: HEADERS });
+        const profileContentBase64 = getProfileResponse.data.content;
+        const profileContentStr = Buffer.from(profileContentBase64, 'base64').toString('utf-8');
+        const profileData = JSON.parse(profileContentStr);
 
-        // 將 Base64 內容解碼成 UTF-8 字串，再解析成 JSON 物件
-        const contentStr = Buffer.from(contentBase64, 'base64').toString('utf-8');
-        const timersData = JSON.parse(contentStr);
+        const bossProfile = profileData.timers.find(boss => boss.id === bossId);
+        
+        // ★★★ 這是本次修改的核心邏輯 ★★★
+        let finalDayOffset = 0; // 最終要增加的天數
+        const now = new Date();
 
-        // 4. 更新 JSON 物件中的資料
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
+        if (bossProfile && bossProfile.capture_day_offset) {
+            // 情況 1: 如果 BOSS 有明確設定 capture_day_offset，直接使用該值
+            finalDayOffset = bossProfile.capture_day_offset;
+        } else {
+            // 情況 2: BOSS 沒有設定 offset，需要智慧判斷
+            // 建立一個代表「今天回報時間點」的 Date 物件
+            const reportedTimeToday = new Date();
+            const [hours, minutes] = time.split(':');
+            reportedTimeToday.setHours(hours, minutes, 0, 0);
+
+            if (reportedTimeToday < now) {
+                // 如果回報的時間已經過去了，重生日期設為明天
+                finalDayOffset = 1;
+            } else {
+                // 如果回報的時間還沒到，重生日期就是今天
+                finalDayOffset = 0;
+            }
+        }
+        // ★★★ 核心邏輯結束 ★★★
+
+
+        const getTimersResponse = await axios.get(API_BASE_URL + TIMERS_FILE_PATH, { headers: HEADERS });
+        const currentSha = getTimersResponse.data.sha;
+        const timersContentBase64 = getTimersResponse.data.content;
+        const timersContentStr = Buffer.from(timersContentBase64, 'base64').toString('utf-8');
+        const timersData = JSON.parse(timersContentStr);
+
+        // 根據我們計算出的 finalDayOffset 來設定新日期
+        const newRespawnDate = new Date();
+        newRespawnDate.setDate(newRespawnDate.getDate() + finalDayOffset);
+
+        const yyyy = newRespawnDate.getFullYear();
+        const mm = String(newRespawnDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(newRespawnDate.getDate()).padStart(2, '0');
+        const newDate = `${yyyy}-${mm}-${dd}`;
 
         timersData[bossId] = {
             time: time,
-            date: `${yyyy}-${mm}-${dd}`,
-            modified: today.toISOString(),
+            date: newDate,
+            modified: new Date().toISOString(),
             is_predicted: false
         };
 
-        // 5. 將更新後的 JSON 物件轉回字串，再編碼成 Base64
         const updatedContentStr = JSON.stringify(timersData, null, 2);
         const updatedContentBase64 = Buffer.from(updatedContentStr).toString('base64');
-
-        // 6. 發送 PUT 請求來更新 GitHub 上的檔案
-        await axios.put(API_URL, {
-            message: `[BOT] Update ${bossId} to ${time}`,
+        
+        await axios.put(API_BASE_URL + TIMERS_FILE_PATH, {
+            message: `[BOT] Update ${bossId} to ${time} on ${newDate}`,
             content: updatedContentBase64,
-            sha: currentSha // 必須提供舊的 SHA 值
+            sha: currentSha
         }, { headers: HEADERS });
 
         return {
@@ -64,6 +92,9 @@ exports.handler = async function(event, context) {
 
     } catch (error) {
         console.error('Error updating GitHub file:', error);
+        if (error.response) {
+            console.error('Error Data:', error.response.data);
+        }
         return {
             statusCode: 500,
             body: JSON.stringify({ message: 'Error updating file on GitHub' })
