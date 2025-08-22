@@ -12,7 +12,8 @@
             <h1>遊戲 Boss & 事件追蹤器</h1>
             <div class="controls">
                 <button id="toggle-hidden-btn">顯示已隱藏的 BOSS</button>
-                <button id="manage-events-btn">管理事件</button> </div>
+                <button id="manage-events-btn">管理事件</button>
+            </div>
             <h2>本日行程</h2>
             <div id="boss-timers-container" class="container">
                 <p class="loading">正在從 GitHub 讀取資料...</p>
@@ -21,7 +22,21 @@
     </main>
 
     <div id="edit-modal-overlay" class="hidden">
-        <div id="edit-modal"> ... </div>
+        <div id="edit-modal">
+            <h3>更新 <span id="modal-boss-name"></span> 的時間</h3>
+            <form id="edit-form">
+                <p>請選擇時間</p>
+                <input type="time" id="time-input" required>
+                <div class="modal-buttons">
+                    <button type="button" id="cancel-btn">取消</button>
+                    <button type="submit" id="save-btn">儲存</button>
+                </div>
+                <div id="modal-feedback" class="hidden">
+                    <div class="spinner"></div>
+                    <p id="modal-message"></p>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="event-manager-overlay" class="hidden">
@@ -55,7 +70,7 @@
                     <button type="submit">儲存事件</button>
                 </div>
             </form>
-             <button type="button" id="close-event-manager-btn">關閉</button>
+             <button type="button" id="close-event-manager-btn" style="width: 100%; margin-top: 10px;">關閉</button>
         </div>
     </div>
 
