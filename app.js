@@ -1,4 +1,4 @@
-// app.js (正確格式的最終版本)
+// app.js (加入通知功能的最終版本)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -41,11 +41,58 @@ const eventListContainer = document.getElementById('event-list-container');
 
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
+    requestNotificationPermission(); // ★ 新增：請求通知權限
     loadSettings();
     loadAllData();
     setupEventListeners();
     createDayCheckboxes();
 });
+
+// ★★★ 新增：通知功能相關函式 ★★★
+function requestNotificationPermission() {
+    if (!("Notification" in window)) {
+        console.log("這個瀏覽器不支援桌面通知。");
+        return;
+    }
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                console.log("通知權限已獲得！");
+            }
+        });
+    }
+}
+
+function scheduleNotifications(items) {
+    if (Notification.permission !== "granted") {
+        return; // 如果沒有權限，就不設定任何通知
+    }
+
+    const now = new Date().getTime();
+    
+    items.forEach(item => {
+        // 我們只為有 dateTime 和 notify_minutes 的事件設定通知
+        // 且 notify_minutes 需大於 0
+        if (item.dateTime && item.notify_minutes && item.notify_minutes > 0) {
+            const notifyTime = item.dateTime.getTime() - (item.notify_minutes * 60 * 1000);
+            
+            // 如果通知時間還沒過去
+            if (notifyTime > now) {
+                const delay = notifyTime - now;
+                setTimeout(() => {
+                    // 觸發通知
+                    new Notification(`${item.name} 即將開始！`, {
+                        body: `事件將於 ${item.notify_minutes} 分鐘後（${item.time}）開始。`,
+                        // 您可以未來在此處加上一個圖示
+                        // icon: './images/notification-icon.png' 
+                    });
+                }, delay);
+            }
+        }
+    });
+}
+// ★★★ 通知功能結束 ★★★
+
 
 const createDateTime = (dateStr, timeStr) => {
     if (!dateStr || !timeStr || timeStr === '待確認') return null;
@@ -105,6 +152,9 @@ function renderCombinedList(profile, timers, events) {
     bossContainer.innerHTML = '';
     const now = new Date();
     let combinedList = processAndCombineData(profile, timers, events, now);
+    
+    scheduleNotifications(combinedList); // ★ 新增：為載入的資料排程通知
+
     if (!showHidden) {
         combinedList = combinedList.filter(item => !(item.itemType === 'boss' && hiddenBosses.includes(item.id)));
     }
@@ -120,7 +170,6 @@ function processAndCombineData(profile, timers, events, now) {
     const todayStrFull = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
     const todayStr = weekDays[now.getDay()];
-
     const allBosses = profile.timers.map(boss => {
         let bossData = {};
         if (boss.type === 'fixed') {
@@ -137,13 +186,10 @@ function processAndCombineData(profile, timers, events, now) {
         }
         return { ...boss, ...bossData, itemType: 'boss' };
     });
-
     const allEvents = Object.values(events)
         .filter(event => !event.deleted && (event.days.includes('每日') || event.days.includes(todayStr)))
         .map(event => ({ ...event, itemType: 'event', dateTime: createDateTime(todayStrFull, event.time) }));
-
     const filteredList = [...allBosses, ...allEvents].filter(item => !item.dateTime || item.dateTime >= now);
-
     return filteredList.sort((a, b) => {
         if (!a.dateTime && b.dateTime) return 1;
         if (a.dateTime && !b.dateTime) return -1;
@@ -156,7 +202,6 @@ function createCardElement(item) {
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.id = item.id;
-
     if (item.itemType === 'boss') {
         if (item.isEditable) card.classList.add('editable');
         if (item.level >= 62) card.classList.add('high-level');
@@ -164,7 +209,6 @@ function createCardElement(item) {
     } else {
         card.classList.add('event-card');
     }
-
     const isHidden = hiddenBosses.includes(item.id);
     const subInfoHTML = `<div class="sub-info">${item.itemType === 'boss' ? item.label : item.days.join(', ')}</div>`;
     const toggleButtonHTML = item.itemType === 'boss' ? `
@@ -172,11 +216,9 @@ function createCardElement(item) {
             ${isHidden ? '⊕' : '✕'}
         </button>
     ` : '';
-
     const displayDate = item.date && item.date !== '每日固定' ? item.date.substring(5) : '';
     let timeDisplayHTML = `<div class="time-display ${item.time === '待確認' ? 'status-pending' : 'status-confirmed'}">${item.time}</div>`;
     timeDisplayHTML += item.dateTime ? `<div class="date-display" data-countdown-to="${item.dateTime.toISOString()}">--:--:--</div>` : `<div class="date-display">${displayDate}</div>`;
-
     card.innerHTML = `
         ${toggleButtonHTML}
         <div class="info">
@@ -187,7 +229,6 @@ function createCardElement(item) {
             ${timeDisplayHTML}
         </div>
     `;
-
     if (item.isEditable) {
         card.querySelector('.info').addEventListener('click', () => openEditModal(item.id, item.name, item.time));
         card.querySelector('.time-info').addEventListener('click', () => openEditModal(item.id, item.name, item.time));
@@ -202,55 +243,15 @@ function createCardElement(item) {
     return card;
 }
 
-// --- 倒數計時器 ---
-function startCountdownTimers() {
-    if (countdownInterval) clearInterval(countdownInterval);
-    countdownInterval = setInterval(() => {
-        const countdownElements = document.querySelectorAll('[data-countdown-to]');
-        countdownElements.forEach(el => {
-            const targetDate = new Date(el.dataset.countdownTo);
-            const now = new Date();
-            const diff = targetDate - now;
-            if (diff <= 0) {
-                el.textContent = "已出現";
-                return;
-            }
-            const hours = Math.floor(diff / 3600000);
-            const minutes = Math.floor((diff % 3600000) / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-            el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        });
-    }, 1000);
-}
-
-// --- BOSS 編輯 Modal ---
-function openEditModal(bossId, bossName, currentTime) {
-    modal.dataset.editingId = bossId;
-    modalBossName.textContent = bossName;
-    timeInput.value = currentTime !== '待確認' ? currentTime : '';
-    modalOverlay.classList.remove('hidden');
-    timeInput.focus();
-}
-
-function closeEditModal() {
-    modalOverlay.classList.add('hidden');
-    modalFeedback.classList.add('hidden');
-    saveBtn.disabled = false;
-    timeInput.disabled = false;
-}
-
+function startCountdownTimers() { if (countdownInterval) clearInterval(countdownInterval); countdownInterval = setInterval(() => { const countdownElements = document.querySelectorAll('[data-countdown-to]'); countdownElements.forEach(el => { const targetDate = new Date(el.dataset.countdownTo); const now = new Date(); const diff = targetDate - now; if (diff <= 0) { el.textContent = "已出現"; return; } const hours = Math.floor(diff / 3600000); const minutes = Math.floor((diff % 3600000) / 60000); const seconds = Math.floor((diff % 60000) / 1000); el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`; }); }, 1000); }
+function openEditModal(bossId, bossName, currentTime) { modal.dataset.editingId = bossId; modalBossName.textContent = bossName; timeInput.value = currentTime !== '待確認' ? currentTime : ''; modalOverlay.classList.remove('hidden'); timeInput.focus(); }
+function closeEditModal() { modalOverlay.classList.add('hidden'); modalFeedback.classList.add('hidden'); saveBtn.disabled = false; timeInput.disabled = false; }
 async function handleFormSubmit(event) {
     event.preventDefault();
     const bossId = modal.dataset.editingId;
     const newTime = timeInput.value;
-    if (!newTime) {
-        showModalMessage('請選擇一個時間', 'error');
-        return;
-    }
-    saveBtn.disabled = true;
-    timeInput.disabled = true;
-    modalFeedback.classList.remove('hidden');
-    showModalMessage('更新中...', '');
+    if (!newTime) { showModalMessage('請選擇一個時間', 'error'); return; }
+    saveBtn.disabled = true; timeInput.disabled = true; modalFeedback.classList.remove('hidden'); showModalMessage('更新中...', '');
     const cardToUpdate = document.querySelector(`.card[data-id="${bossId}"]`);
     const originalTimeDisplay = cardToUpdate.querySelector('.time-display');
     const originalCountdown = cardToUpdate.querySelector('.date-display');
@@ -258,22 +259,10 @@ async function handleFormSubmit(event) {
     originalTimeDisplay.textContent = newTime;
     originalCountdown.textContent = '更新成功';
     try {
-        const response = await fetch('/.netlify/functions/update-timer', {
-            method: 'POST',
-            body: JSON.stringify({
-                bossId,
-                time: newTime
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await fetch('/.netlify/functions/update-timer', { method: 'POST', body: JSON.stringify({ bossId, time: newTime }), headers: { 'Content-Type': 'application/json' } });
         if (!response.ok) throw new Error(`伺服器錯誤: ${response.statusText}`);
         showModalMessage('更新成功！', 'success');
-        setTimeout(() => {
-            closeEditModal();
-            loadAllData();
-        }, 1000);
+        setTimeout(() => { closeEditModal(); loadAllData(); }, 1000);
     } catch (error) {
         console.error('更新失敗:', error);
         showModalMessage(`更新失敗: ${error.message}`, 'error');
@@ -282,50 +271,13 @@ async function handleFormSubmit(event) {
         setTimeout(closeEditModal, 2000);
     }
 }
-
-function showModalMessage(message, type) {
-    modalMessage.textContent = message;
-    modalMessage.className = type;
-}
-
-// --- 個人化設定 ---
-function handleHideClick(bossId) {
-    if (!hiddenBosses.includes(bossId)) {
-        hiddenBosses.push(bossId);
-        saveHiddenBosses();
-        document.querySelector(`.card[data-id="${bossId}"]`).style.display = 'none';
-    }
-}
-
-function handleUnhideClick(bossId) {
-    hiddenBosses = hiddenBosses.filter(id => id !== bossId);
-    saveHiddenBosses();
-    loadAllData();
-}
-
-function toggleShowHidden() {
-    showHidden = !showHidden;
-    saveShowHidden();
-    updateToggleButton();
-    loadAllData();
-}
-
-function updateToggleButton() {
-    toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS';
-}
-
-
-// --- 事件管理功能 ---
-function openEventManager() {
-    renderEventManagerList();
-    resetEventForm();
-    eventManagerOverlay.classList.remove('hidden');
-}
-
-function closeEventManager() {
-    eventManagerOverlay.classList.add('hidden');
-}
-
+function showModalMessage(message, type) { modalMessage.textContent = message; modalMessage.className = type; }
+function handleHideClick(bossId) { if (!hiddenBosses.includes(bossId)) { hiddenBosses.push(bossId); saveHiddenBosses(); document.querySelector(`.card[data-id="${bossId}"]`).style.display = 'none'; } }
+function handleUnhideClick(bossId) { hiddenBosses = hiddenBosses.filter(id => id !== bossId); saveHiddenBosses(); loadAllData(); }
+function toggleShowHidden() { showHidden = !showHidden; saveShowHidden(); updateToggleButton(); loadAllData(); }
+function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS'; }
+function openEventManager() { renderEventManagerList(); resetEventForm(); eventManagerOverlay.classList.remove('hidden'); }
+function closeEventManager() { eventManagerOverlay.classList.add('hidden'); }
 function renderEventManagerList() {
     eventListContainer.innerHTML = '';
     const sortedEvents = Object.values(allEventsData).sort((a, b) => new Date(b.modified) - new Date(a.modified));
@@ -347,84 +299,31 @@ function renderEventManagerList() {
         eventListContainer.appendChild(item);
     });
 }
-
-function fillEventForm(eventId) {
-    const event = allEventsData[eventId];
-    eventIdInput.value = event.id;
-    eventNameInput.value = event.name;
-    eventTimeInput.value = event.time;
-    eventNotifyInput.value = event.notify_minutes;
-    const checkboxes = document.querySelectorAll('#event-days-checkboxes input');
-    checkboxes.forEach(cb => {
-        cb.checked = event.days.includes(cb.value);
-    });
-}
-
-function resetEventForm() {
-    eventForm.reset();
-    eventIdInput.value = '';
-    const checkboxes = document.querySelectorAll('#event-days-checkboxes input');
-    checkboxes.forEach(cb => cb.checked = false);
-}
-
+function fillEventForm(eventId) { const event = allEventsData[eventId]; eventIdInput.value = event.id; eventNameInput.value = event.name; eventTimeInput.value = event.time; eventNotifyInput.value = event.notify_minutes; const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); checkboxes.forEach(cb => { cb.checked = event.days.includes(cb.value); }); }
+function resetEventForm() { eventForm.reset(); eventIdInput.value = ''; const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); checkboxes.forEach(cb => cb.checked = false); }
 async function handleEventFormSubmit(event) {
     event.preventDefault();
     const eventId = eventIdInput.value;
     const selectedDays = [...document.querySelectorAll('#event-days-checkboxes input:checked')].map(cb => cb.value);
-    if (selectedDays.length === 0) {
-        alert('請至少選擇一個重複日！');
-        return;
-    }
-    const eventData = {
-        name: eventNameInput.value,
-        time: eventTimeInput.value,
-        days: selectedDays,
-        notify_minutes: parseInt(eventNotifyInput.value) || 0,
-    };
+    if (selectedDays.length === 0) { alert('請至少選擇一個重複日！'); return; }
+    const eventData = { name: eventNameInput.value, time: eventTimeInput.value, days: selectedDays, notify_minutes: parseInt(eventNotifyInput.value) || 0, };
     const endpoint = eventId ? '/.netlify/functions/update-event' : '/.netlify/functions/create-event';
-    const body = eventId ? {
-        eventId,
-        updatedData: eventData
-    } : eventData;
+    const body = eventId ? { eventId, updatedData: eventData } : eventData;
     try {
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(body)
-        });
+        const response = await fetch(endpoint, { method: 'POST', body: JSON.stringify(body) });
         if (!response.ok) throw new Error('伺服器錯誤');
         alert('事件儲存成功！');
         resetEventForm();
         await loadAllData();
         renderEventManagerList();
-    } catch (error) {
-        alert('事件儲存失敗！');
-        console.error(error);
-    }
+    } catch (error) { alert('事件儲存失敗！'); console.error(error); }
 }
-
 async function toggleEventDeleted(eventId, shouldDelete) {
     try {
-        const response = await fetch('/.netlify/functions/delete-event', {
-            method: 'POST',
-            body: JSON.stringify({
-                eventId,
-                shouldDelete
-            })
-        });
+        const response = await fetch('/.netlify/functions/delete-event', { method: 'POST', body: JSON.stringify({ eventId, shouldDelete }) });
         if (!response.ok) throw new Error('伺服器錯誤');
         await loadAllData();
         renderEventManagerList();
-    } catch (error) {
-        alert('操作失敗！');
-        console.error(error);
-    }
+    } catch (error) { alert('操作失敗！'); console.error(error); }
 }
-
-function createDayCheckboxes() {
-    const days = ['每日', '日', '一', '二', '三', '四', '五', '六'];
-    days.forEach(day => {
-        const div = document.createElement('div');
-        div.innerHTML = `<label><input type="checkbox" value="${day}"> ${day}</label>`;
-        eventDaysCheckboxes.appendChild(div);
-    });
-}
+function createDayCheckboxes() { const days = ['每日', '日', '一', '二', '三', '四', '五', '六']; days.forEach(day => { const div = document.createElement('div'); div.innerHTML = `<label><input type="checkbox" value="${day}"> ${day}</label>`; eventDaysCheckboxes.appendChild(div); }); }
