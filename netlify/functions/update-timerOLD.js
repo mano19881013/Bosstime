@@ -28,7 +28,7 @@ exports.handler = async function(event, context) {
         const getFileResponse = await axios.get(API_URL, { headers: HEADERS });
         const currentSha = getFileResponse.data.sha;
         const contentBase64 = getFileResponse.data.content;
-
+        
         // 將 Base64 內容解碼成 UTF-8 字串，再解析成 JSON 物件
         const contentStr = Buffer.from(contentBase64, 'base64').toString('utf-8');
         const timersData = JSON.parse(contentStr);
@@ -49,7 +49,7 @@ exports.handler = async function(event, context) {
         // 5. 將更新後的 JSON 物件轉回字串，再編碼成 Base64
         const updatedContentStr = JSON.stringify(timersData, null, 2);
         const updatedContentBase64 = Buffer.from(updatedContentStr).toString('base64');
-
+        
         // 6. 發送 PUT 請求來更新 GitHub 上的檔案
         await axios.put(API_URL, {
             message: `[BOT] Update ${bossId} to ${time}`,
