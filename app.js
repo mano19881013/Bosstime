@@ -1,9 +1,9 @@
-// app.js (★加入取消隱藏功能最終版)
+// app.js (★使用 type="time" 輸入版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
 const GITHUB_REPO = 'Bosstime';
-const GITHUB_BRANCH = 'main'; // 通常是 'main' 或 'master'
+const GITHUB_BRANCH = 'main';
 const PROFILE_PATH = './game_profile.json';
 const TIMERS_DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/timers_data.json`;
 const CUSTOM_EVENTS_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/custom_events.json`;
@@ -81,11 +81,9 @@ function renderCombinedList(profile, timers, events) {
     bossContainer.innerHTML = ''; 
     const now = new Date();
     let combinedList = processAndCombineData(profile, timers, events, now);
-
     if (!showHidden) {
         combinedList = combinedList.filter(item => !(item.itemType === 'boss' && hiddenBosses.includes(item.id)));
     }
-
     combinedList.forEach(item => {
         const card = createCardElement(item);
         bossContainer.appendChild(card);
@@ -98,7 +96,6 @@ function processAndCombineData(profile, timers, events, now) {
     const todayStrFull = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
     const todayStr = weekDays[now.getDay()];
-
     const allBosses = profile.timers.map(boss => {
         let bossData = {};
         if (boss.type === 'fixed') {
@@ -115,13 +112,10 @@ function processAndCombineData(profile, timers, events, now) {
         }
         return { ...boss, ...bossData, itemType: 'boss' };
     });
-
     const allEvents = Object.values(events)
         .filter(event => !event.deleted && (event.days.includes('每日') || event.days.includes(todayStr)))
         .map(event => ({ ...event, itemType: 'event', dateTime: createDateTime(todayStrFull, event.time) }));
-
     const filteredList = [...allBosses, ...allEvents].filter(item => !item.dateTime || item.dateTime >= now);
-    
     return filteredList.sort((a, b) => {
         if (!a.dateTime && b.dateTime) return 1;
         if (a.dateTime && !b.dateTime) return -1;
@@ -130,36 +124,28 @@ function processAndCombineData(profile, timers, events, now) {
     });
 }
 
-// ★★★ 修改：根據是否隱藏來產生不同按鈕 ★★★
 function createCardElement(item) {
     const isPending = item.time === '待確認';
     const statusClass = isPending ? 'status-pending' : 'status-confirmed';
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.id = item.id;
-
     let subInfoHTML = '';
     let toggleButtonHTML = '';
-
     if (item.itemType === 'boss') {
         subInfoHTML = `<div class="sub-info">${item.label}</div>`;
         if (item.isEditable) card.classList.add('editable');
         if (item.level >= 62) card.classList.add('high-level');
-
-        // 判斷是否為已隱藏的 BOSS
         if (hiddenBosses.includes(item.id)) {
             card.classList.add('is-hidden-item');
-            // 產生「恢復」按鈕
             toggleButtonHTML = `<button class="card-toggle-btn restore-btn" title="恢復" onclick="handleUnhideClick(event, '${item.id}')">⊕</button>`;
         } else {
-            // 產生「隱藏」按鈕
             toggleButtonHTML = `<button class="card-toggle-btn hide-btn" title="隱藏" onclick="handleHideClick(event, '${item.id}')">✕</button>`;
         }
     } else {
         subInfoHTML = `<div class="sub-info">${item.days.join(', ')}</div>`;
         card.classList.add('event-card');
     }
-
     const displayDate = item.date && item.date !== '每日固定' ? item.date.substring(5) : '';
     let timeDisplayHTML = `<div class="time-display ${statusClass}">${item.time}</div>`;
     if (item.dateTime) {
@@ -167,7 +153,6 @@ function createCardElement(item) {
     } else {
         timeDisplayHTML += `<div class="date-display">${displayDate}</div>`;
     }
-
     card.innerHTML = `
         ${toggleButtonHTML}
         <div class="info" ${item.isEditable ? `onclick="openEditModal('${item.id}', '${item.name}', '${item.time}')"` : ''}>
@@ -180,7 +165,6 @@ function createCardElement(item) {
     `;
     return card;
 }
-
 
 function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
@@ -206,28 +190,37 @@ function openEditModal(bossId, bossName, currentTime) {
     modalOverlay.classList.remove('hidden');
     timeInput.focus();
 }
+
 function closeEditModal() {
     modalOverlay.classList.add('hidden');
     modalFeedback.classList.add('hidden');
     saveBtn.disabled = false;
     timeInput.disabled = false;
 }
+
+// ★★★ 修改這裡：簡化 handleFormSubmit 函式 ★★★
 async function handleFormSubmit(event) {
     event.preventDefault();
     const bossId = modal.dataset.editingId;
-    const userInput = timeInput.value;
-    const newTime = parseAndValidateTime(userInput);
-    if (!newTime) { showModalMessage('格式錯誤！請輸入 HH:MM', 'error'); return; }
+    const newTime = timeInput.value; // 直接從 <input type="time"> 獲取值
+
+    if (!newTime) { // 簡單檢查是否為空
+        showModalMessage('請選擇一個時間', 'error');
+        return;
+    }
+
     saveBtn.disabled = true;
     timeInput.disabled = true;
     modalFeedback.classList.remove('hidden');
     showModalMessage('更新中...', '');
+
     const cardToUpdate = document.querySelector(`.card[data-id="${bossId}"]`);
     const originalTimeDisplay = cardToUpdate.querySelector('.time-display');
     const originalCountdown = cardToUpdate.querySelector('.date-display');
     const originalTime = originalTimeDisplay.textContent;
     originalTimeDisplay.textContent = newTime;
     originalCountdown.textContent = '計算中...';
+
     try {
         const response = await fetch('/.netlify/functions/update-timer', {
             method: 'POST',
@@ -245,6 +238,7 @@ async function handleFormSubmit(event) {
         setTimeout(closeEditModal, 2000);
     }
 }
+
 function showModalMessage(message, type) {
     modalMessage.textContent = message;
     modalMessage.className = type;
@@ -255,16 +249,15 @@ function handleHideClick(event, bossId) {
     if (!hiddenBosses.includes(bossId)) {
         hiddenBosses.push(bossId);
         saveHiddenBosses();
-        document.querySelector(`.card[data-id="${bossId}"]`).style.display = 'none'; // 直接隱藏，避免重刷
+        document.querySelector(`.card[data-id="${bossId}"]`).style.display = 'none';
     }
 }
 
-// ★★★ 新增：取消隱藏的函式 ★★★
 function handleUnhideClick(event, bossId) {
     event.stopPropagation();
-    hiddenBosses = hiddenBosses.filter(id => id !== bossId); // 從陣列中移除
+    hiddenBosses = hiddenBosses.filter(id => id !== bossId);
     saveHiddenBosses();
-    loadAllData(); // 重新載入並渲染整個列表
+    loadAllData();
 }
 
 function toggleShowHidden() {
@@ -273,16 +266,10 @@ function toggleShowHidden() {
     updateToggleButton();
     loadAllData();
 }
+
 function updateToggleButton() {
     toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS';
 }
 
-function parseAndValidateTime(input) {
-    if (!input) return null;
-    const standardRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-    if (standardRegex.test(input)) return input;
-    const digits = input.replace(/\D/g, '');
-    if (digits.length === 4) { const hour = digits.substring(0, 2); const minute = digits.substring(2, 4); const formattedTime = `${hour}:${minute}`; if (standardRegex.test(formattedTime)) return formattedTime; }
-    if (digits.length === 3) { const hour = '0' + digits.substring(0, 1); const minute = digits.substring(1, 3); const formattedTime = `${hour}:${minute}`; if (standardRegex.test(formattedTime)) return formattedTime; }
-    return null;
-}
+// ★★★ 我們不再需要 parseAndValidateTime 這個函式了！★★★
+// 可以將它整個刪除，讓程式碼更乾淨。
