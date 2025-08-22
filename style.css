@@ -1,120 +1,150 @@
-/* style.css (★合併列表版) */
+/* style.css (★整合優化版) */
+
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --light-grey: #f0f2f5;
+    --dark-grey: #666;
+    --text-color: #333;
+    --card-bg: #fff;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
 
 /* 基本樣式 */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    background-color: var(--light-grey);
+    color: var(--text-color);
     margin: 0;
 }
+main { padding: 15px; }
+h1 { text-align: center; color: #1a2c4e; font-size: 1.5rem; margin-bottom: 20px; }
+h2 { font-size: 1rem; color: var(--dark-grey); font-weight: normal; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 20px; margin-bottom: 15px; }
 
-main {
-    padding: 15px;
-}
-
-h1 {
-    text-align: center;
-    color: #1a2c4e;
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-}
-
-h2 {
-    font-size: 1rem;
-    color: #666;
-    font-weight: normal;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-top: 20px;
-    margin-bottom: 15px;
-}
+/* 控制按鈕 */
+.controls { text-align: center; margin-bottom: 20px; }
+#toggle-hidden-btn { background: var(--dark-grey); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 
 /* 容器樣式 */
-.container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 12px;
-}
-
-.loading {
-    color: #888;
-}
+.container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.loading { color: var(--dark-grey); }
 
 /* 卡片樣式 */
 .card {
-    background-color: #fff;
+    background-color: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow: var(--card-shadow);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 15px;
-    border-left: 5px solid #6b9cff; /* 預設顏色 (固定BOSS) */
-    transition: background-color 0.2s;
+    border-left: 5px solid #6b9cff;
+    position: relative; /* 為了隱藏按鈕定位 */
 }
+.card.editable { cursor: pointer; border-left-color: var(--success-color); }
+.card.editable:hover { background-color: #e9f5ff; }
+.card.event-card { border-left-color: var(--warning-color); }
+.card.high-level .name { color: var(--danger-color); }
 
-/* 可編輯的浮動 BOSS 卡片樣式 */
-.card.editable {
+/* ★ 新增：隱藏按鈕 */
+.hide-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: #e0e0e0;
+    color: #888;
+    border-radius: 50%;
     cursor: pointer;
-    border-left-color: #28a745; /* 綠色 (浮動BOSS) */
+    font-size: 10px;
+    line-height: 20px;
+    text-align: center;
+    opacity: 0; /* 平時隱藏 */
+    transition: opacity 0.2s;
 }
+.card:hover .hide-btn { opacity: 1; /* 滑鼠移到卡片上才顯示 */ }
+.hide-btn:hover { background: #ccc; }
 
-.card.editable:hover {
-    background-color: #e9f5ff;
-}
+/* 卡片內容 */
+.info { display: flex; flex-direction: column; }
+.name { font-size: 1.1rem; font-weight: 500; }
+.sub-info { font-size: 0.8rem; color: var(--dark-grey); margin-top: 4px; }
+.time-info { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.time-display { font-size: 1.3rem; font-weight: bold; }
+.date-display { font-size: 0.8rem; color: var(--dark-grey); margin-top: 4px; }
+.status-confirmed { color: var(--success-color); }
+.status-pending { color: var(--danger-color); }
 
-/* ★★★ 新增：事件卡片樣式 ★★★ */
-.card.event-card {
-    border-left-color: #ffc107; /* 黃色 (事件) */
-}
+/* ★ 新增：彈出視窗 (Modal) 樣式 */
+.hidden { display: none !important; }
 
-
-/* 左側：資訊 */
-.info {
+#edit-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-.name {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #333;
+#edit-modal {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+#edit-modal h3 { margin-top: 0; }
+#edit-modal p { margin: 10px 0 5px; }
+
+#time-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.sub-info {
-    font-size: 0.8rem;
-    color: #888;
-    margin-top: 4px;
+.modal-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+.modal-buttons button {
+    width: 48%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+#cancel-btn { background-color: #ccc; }
+#save-btn { background-color: var(--primary-color); color: white; }
+
+/* ★ 新增：載入中與訊息提示 */
+#modal-feedback { margin-top: 15px; text-align: center; }
+#modal-message { font-weight: bold; }
+#modal-message.success { color: var(--success-color); }
+#modal-message.error { color: var(--danger-color); }
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
 }
 
-/* 右側：時間資訊 */
-.time-info {
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.time-display {
-    font-size: 1.3rem;
-    font-weight: bold;
-}
-
-.date-display {
-    font-size: 0.8rem;
-    color: #888;
-    margin-top: 4px;
-}
-
-/* 狀態顏色 */
-.status-confirmed {
-    color: #28a745;
-}
-
-.status-pending {
-    color: #dc3545;
-}
-/* ★★★ 新增：高 LV BOSS 的特殊樣式 ★★★ */
-.card.high-level .name {
-    color: #dc3545; /* 使用與「待確認」相同的紅色 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

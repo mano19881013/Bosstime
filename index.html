@@ -11,18 +11,33 @@
     <main>
         <section id="boss-section">
             <h1>遊戲 Boss & 事件追蹤器</h1>
-            <h2>BOSS 計時器</h2>
+            <div class="controls">
+                <button id="toggle-hidden-btn">顯示已隱藏的 BOSS</button>
+            </div>
+            <h2>本日行程</h2>
             <div id="boss-timers-container" class="container">
                 <p class="loading">正在從 GitHub 讀取資料...</p>
             </div>
         </section>
-
-        <section id="event-section">
-            <h2>自訂事件</h2>
-            <div id="custom-events-container" class="container">
-                </div>
-        </section>
     </main>
+
+    <div id="edit-modal-overlay" class="hidden">
+        <div id="edit-modal">
+            <h3>更新 <span id="modal-boss-name"></span> 的時間</h3>
+            <form id="edit-form">
+                <p>請輸入時間 (可輸入 1234 或 12:34)</p>
+                <input type="text" id="time-input" placeholder="HH:MM" required autocomplete="off">
+                <div class="modal-buttons">
+                    <button type="button" id="cancel-btn">取消</button>
+                    <button type="submit" id="save-btn">儲存</button>
+                </div>
+                <div id="modal-feedback" class="hidden">
+                    <div class="spinner"></div>
+                    <p id="modal-message"></p>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 
