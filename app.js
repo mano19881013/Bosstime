@@ -1,4 +1,4 @@
-// app.js (★修正 createDateTime 範圍問題版)
+// app.js (★加入取消隱藏功能最終版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -26,7 +26,6 @@ const modalFeedback = document.getElementById('modal-feedback');
 const modalMessage = document.getElementById('modal-message');
 const toggleHiddenBtn = document.getElementById('toggle-hidden-btn');
 
-
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
@@ -34,14 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
-// --- ★★★ 修正點：將 createDateTime 移到這裡 ★★★ ---
-// 輔助函式：將 YYYY-MM-DD 和 HH:MM 組合成 Date 物件
 const createDateTime = (dateStr, timeStr) => {
     if (!dateStr || !timeStr || timeStr === '待確認') return null;
     return new Date(`${dateStr}T${timeStr}`);
 };
 
-// --- 事件監聽 ---
 function setupEventListeners() {
     editForm.addEventListener('submit', handleFormSubmit);
     cancelBtn.addEventListener('click', closeEditModal);
@@ -51,7 +47,6 @@ function setupEventListeners() {
     toggleHiddenBtn.addEventListener('click', toggleShowHidden);
 }
 
-// --- LocalStorage 功能 ---
 function loadSettings() {
     hiddenBosses = JSON.parse(localStorage.getItem('hiddenBosses') || '[]');
     showHidden = JSON.parse(localStorage.getItem('showHidden') || 'false');
@@ -64,7 +59,6 @@ function saveShowHidden() {
     localStorage.setItem('showHidden', JSON.stringify(showHidden));
 }
 
-// --- 主資料載入與渲染 ---
 async function loadAllData() {
     bossContainer.innerHTML = '<p class="loading">正在從 GitHub 讀取資料...</p>';
     try {
@@ -86,7 +80,6 @@ async function loadAllData() {
 function renderCombinedList(profile, timers, events) {
     bossContainer.innerHTML = ''; 
     const now = new Date();
-
     let combinedList = processAndCombineData(profile, timers, events, now);
 
     if (!showHidden) {
@@ -137,6 +130,7 @@ function processAndCombineData(profile, timers, events, now) {
     });
 }
 
+// ★★★ 修改：根據是否隱藏來產生不同按鈕 ★★★
 function createCardElement(item) {
     const isPending = item.time === '待確認';
     const statusClass = isPending ? 'status-pending' : 'status-confirmed';
@@ -145,21 +139,28 @@ function createCardElement(item) {
     card.dataset.id = item.id;
 
     let subInfoHTML = '';
+    let toggleButtonHTML = '';
+
     if (item.itemType === 'boss') {
         subInfoHTML = `<div class="sub-info">${item.label}</div>`;
-        if (item.isEditable) {
-            card.classList.add('editable');
-            card.addEventListener('click', () => openEditModal(item.id, item.name, item.time));
-        }
+        if (item.isEditable) card.classList.add('editable');
         if (item.level >= 62) card.classList.add('high-level');
-        card.innerHTML += `<button class="hide-btn" data-id="${item.id}" onclick="handleHideClick(event, '${item.id}')">✕</button>`;
+
+        // 判斷是否為已隱藏的 BOSS
+        if (hiddenBosses.includes(item.id)) {
+            card.classList.add('is-hidden-item');
+            // 產生「恢復」按鈕
+            toggleButtonHTML = `<button class="card-toggle-btn restore-btn" title="恢復" onclick="handleUnhideClick(event, '${item.id}')">⊕</button>`;
+        } else {
+            // 產生「隱藏」按鈕
+            toggleButtonHTML = `<button class="card-toggle-btn hide-btn" title="隱藏" onclick="handleHideClick(event, '${item.id}')">✕</button>`;
+        }
     } else {
         subInfoHTML = `<div class="sub-info">${item.days.join(', ')}</div>`;
         card.classList.add('event-card');
     }
 
     const displayDate = item.date && item.date !== '每日固定' ? item.date.substring(5) : '';
-
     let timeDisplayHTML = `<div class="time-display ${statusClass}">${item.time}</div>`;
     if (item.dateTime) {
         timeDisplayHTML += `<div class="date-display" data-countdown-to="${item.dateTime.toISOString()}">--:--:--</div>`;
@@ -167,19 +168,20 @@ function createCardElement(item) {
         timeDisplayHTML += `<div class="date-display">${displayDate}</div>`;
     }
 
-    card.innerHTML += `
-        <div class="info">
+    card.innerHTML = `
+        ${toggleButtonHTML}
+        <div class="info" ${item.isEditable ? `onclick="openEditModal('${item.id}', '${item.name}', '${item.time}')"` : ''}>
             <div class="name">${item.name}</div>
             ${subInfoHTML}
         </div>
-        <div class="time-info">
+        <div class="time-info" ${item.isEditable ? `onclick="openEditModal('${item.id}', '${item.name}', '${item.time}')"` : ''}>
             ${timeDisplayHTML}
         </div>
     `;
     return card;
 }
 
-// --- 倒數計時器功能 ---
+
 function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
@@ -188,10 +190,7 @@ function startCountdownTimers() {
             const targetDate = new Date(el.dataset.countdownTo);
             const now = new Date();
             const diff = targetDate - now;
-            if (diff <= 0) {
-                el.textContent = "已出現";
-                return;
-            }
+            if (diff <= 0) { el.textContent = "已出現"; return; }
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -200,7 +199,6 @@ function startCountdownTimers() {
     }, 1000);
 }
 
-// --- 彈出視窗 (Modal) 功能 ---
 function openEditModal(bossId, bossName, currentTime) {
     modal.dataset.editingId = bossId;
     modalBossName.textContent = bossName;
@@ -219,10 +217,7 @@ async function handleFormSubmit(event) {
     const bossId = modal.dataset.editingId;
     const userInput = timeInput.value;
     const newTime = parseAndValidateTime(userInput);
-    if (!newTime) {
-        showModalMessage('格式錯誤！請輸入 HH:MM', 'error');
-        return;
-    }
+    if (!newTime) { showModalMessage('格式錯誤！請輸入 HH:MM', 'error'); return; }
     saveBtn.disabled = true;
     timeInput.disabled = true;
     modalFeedback.classList.remove('hidden');
@@ -241,10 +236,7 @@ async function handleFormSubmit(event) {
         });
         if (!response.ok) throw new Error(`伺服器錯誤: ${response.statusText}`);
         showModalMessage('更新成功！', 'success');
-        setTimeout(() => {
-            closeEditModal();
-            loadAllData();
-        }, 1000);
+        setTimeout(() => { closeEditModal(); loadAllData(); }, 1000);
     } catch (error) {
         console.error('更新失敗:', error);
         showModalMessage(`更新失敗: ${error.message}`, 'error');
@@ -258,15 +250,23 @@ function showModalMessage(message, type) {
     modalMessage.className = type;
 }
 
-// --- 使用者個人化設定 ---
 function handleHideClick(event, bossId) {
     event.stopPropagation();
     if (!hiddenBosses.includes(bossId)) {
         hiddenBosses.push(bossId);
         saveHiddenBosses();
-        document.querySelector(`.card[data-id="${bossId}"]`).remove();
+        document.querySelector(`.card[data-id="${bossId}"]`).style.display = 'none'; // 直接隱藏，避免重刷
     }
 }
+
+// ★★★ 新增：取消隱藏的函式 ★★★
+function handleUnhideClick(event, bossId) {
+    event.stopPropagation();
+    hiddenBosses = hiddenBosses.filter(id => id !== bossId); // 從陣列中移除
+    saveHiddenBosses();
+    loadAllData(); // 重新載入並渲染整個列表
+}
+
 function toggleShowHidden() {
     showHidden = !showHidden;
     saveShowHidden();
@@ -277,23 +277,12 @@ function updateToggleButton() {
     toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS';
 }
 
-// --- 時間解析 ---
 function parseAndValidateTime(input) {
     if (!input) return null;
     const standardRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
     if (standardRegex.test(input)) return input;
     const digits = input.replace(/\D/g, '');
-    if (digits.length === 4) {
-        const hour = digits.substring(0, 2);
-        const minute = digits.substring(2, 4);
-        const formattedTime = `${hour}:${minute}`;
-        if (standardRegex.test(formattedTime)) return formattedTime;
-    }
-    if (digits.length === 3) {
-        const hour = '0' + digits.substring(0, 1);
-        const minute = digits.substring(1, 3);
-        const formattedTime = `${hour}:${minute}`;
-        if (standardRegex.test(formattedTime)) return formattedTime;
-    }
+    if (digits.length === 4) { const hour = digits.substring(0, 2); const minute = digits.substring(2, 4); const formattedTime = `${hour}:${minute}`; if (standardRegex.test(formattedTime)) return formattedTime; }
+    if (digits.length === 3) { const hour = '0' + digits.substring(0, 1); const minute = digits.substring(1, 3); const formattedTime = `${hour}:${minute}`; if (standardRegex.test(formattedTime)) return formattedTime; }
     return null;
 }

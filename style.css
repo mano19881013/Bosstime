@@ -1,4 +1,4 @@
-/* style.css (★整合優化版) */
+/* style.css (★加入取消隱藏功能版) */
 
 :root {
     --primary-color: #007bff;
@@ -13,61 +13,49 @@
 }
 
 /* 基本樣式 */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--light-grey);
-    color: var(--text-color);
-    margin: 0;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--light-grey); color: var(--text-color); margin: 0; }
 main { padding: 15px; }
 h1 { text-align: center; color: #1a2c4e; font-size: 1.5rem; margin-bottom: 20px; }
 h2 { font-size: 1rem; color: var(--dark-grey); font-weight: normal; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 20px; margin-bottom: 15px; }
-
-/* 控制按鈕 */
 .controls { text-align: center; margin-bottom: 20px; }
 #toggle-hidden-btn { background: var(--dark-grey); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-
-/* 容器樣式 */
 .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 .loading { color: var(--dark-grey); }
 
 /* 卡片樣式 */
-.card {
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: var(--card-shadow);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    border-left: 5px solid #6b9cff;
-    position: relative; /* 為了隱藏按鈕定位 */
-}
+.card { background-color: var(--card-bg); border-radius: 8px; box-shadow: var(--card-shadow); display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-left: 5px solid #6b9cff; position: relative; transition: all 0.2s; }
 .card.editable { cursor: pointer; border-left-color: var(--success-color); }
 .card.editable:hover { background-color: #e9f5ff; }
 .card.event-card { border-left-color: var(--warning-color); }
 .card.high-level .name { color: var(--danger-color); }
 
-/* ★ 新增：隱藏按鈕 */
-.hide-btn {
+/* ★ 新增：被隱藏的卡片在「顯示」模式下的樣式 */
+.card.is-hidden-item { opacity: 0.6; }
+
+/* ★ 修改：隱藏/恢復按鈕的通用樣式 */
+.card-toggle-btn {
     position: absolute;
     top: 5px;
     right: 5px;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border: none;
-    background: #e0e0e0;
-    color: #888;
+    color: white;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 10px;
-    line-height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 22px;
     text-align: center;
-    opacity: 0; /* 平時隱藏 */
+    opacity: 0;
     transition: opacity 0.2s;
 }
-.card:hover .hide-btn { opacity: 1; /* 滑鼠移到卡片上才顯示 */ }
-.hide-btn:hover { background: #ccc; }
+.card:hover .card-toggle-btn { opacity: 1; }
+
+.hide-btn { background: #aaa; }
+.hide-btn:hover { background: #888; }
+.restore-btn { background: var(--primary-color); } /* 恢復按鈕 */
+.restore-btn:hover { background: #0056b3; }
 
 /* 卡片內容 */
 .info { display: flex; flex-direction: column; }
@@ -79,72 +67,22 @@ h2 { font-size: 1rem; color: var(--dark-grey); font-weight: normal; border-botto
 .status-confirmed { color: var(--success-color); }
 .status-pending { color: var(--danger-color); }
 
-/* ★ 新增：彈出視窗 (Modal) 樣式 */
+/* 彈出視窗 (Modal) 樣式 */
 .hidden { display: none !important; }
-
-#edit-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-#edit-modal {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
+#edit-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+#edit-modal { background-color: var(--card-bg); padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 #edit-modal h3 { margin-top: 0; }
 #edit-modal p { margin: 10px 0 5px; }
-
-#time-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.2rem;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-
+#time-input { width: 100%; padding: 10px; font-size: 1.2rem; text-align: center; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
 .modal-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
-.modal-buttons button {
-    width: 48%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-}
+.modal-buttons button { width: 48%; padding: 10px; border-radius: 5px; border: none; font-size: 1rem; cursor: pointer; }
 #cancel-btn { background-color: #ccc; }
 #save-btn { background-color: var(--primary-color); color: white; }
 
-/* ★ 新增：載入中與訊息提示 */
+/* 載入中與訊息提示 */
 #modal-feedback { margin-top: 15px; text-align: center; }
 #modal-message { font-weight: bold; }
 #modal-message.success { color: var(--success-color); }
 #modal-message.error { color: var(--danger-color); }
-
-.spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--primary-color);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 10px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+.spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
