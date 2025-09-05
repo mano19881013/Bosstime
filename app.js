@@ -90,7 +90,7 @@ const createDateTime = (dateStr, timeStr) => {
     return new Date(`${dateStr}T${timeStr}`);
 };
 
-"""function setupEventListeners() {
+function setupEventListeners() {
     editForm.addEventListener('submit', handleFormSubmit);
     cancelBtn.addEventListener('click', closeEditModal);
     modalOverlay.addEventListener('click', (e) => {
@@ -105,7 +105,7 @@ const createDateTime = (dateStr, timeStr) => {
     eventForm.addEventListener('submit', handleEventFormSubmit);
     eventCancelBtn.addEventListener('click', resetEventForm);
     timeInput.addEventListener('input', formatTimeInput);
-}""
+}
 
 function loadSettings() {
     hiddenBosses = JSON.parse(localStorage.getItem('hiddenBosses') || '[]');
