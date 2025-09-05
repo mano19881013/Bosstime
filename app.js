@@ -13,6 +13,7 @@ let countdownInterval;
 let hiddenBosses = [];
 let showHidden = false;
 let allEventsData = {};
+let allProfileData = {}; // ★ 新增，用於樂觀更新
 
 // --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
@@ -127,11 +128,11 @@ async function loadAllData() {
             fetch(TIMERS_DATA_URL),
             fetch(CUSTOM_EVENTS_URL)
         ]);
-        const profileData = await profileRes.json();
+        allProfileData = await profileRes.json(); // ★ 修改：儲存到全域變數
         const timersData = await timersRes.json();
         const eventsData = await eventsRes.json();
         allEventsData = eventsData;
-        renderCombinedList(profileData, timersData, eventsData);
+        renderCombinedList(allProfileData, timersData, eventsData); // ★ 修改：使用全域變數
     } catch (error) {
         console.error('載入資料時發生錯誤:', error);
         bossContainer.innerHTML = '<p style="color: red;">資料載入失敗，請檢查網路連線或 GitHub 設定。</p>';
@@ -248,25 +249,77 @@ async function handleFormSubmit(event) {
     event.preventDefault();
     const bossId = modal.dataset.editingId;
     const newTime = timeInput.value;
-    if (!newTime) { showModalMessage('請選擇一個時間', 'error'); return; }
-    saveBtn.disabled = true; timeInput.disabled = true; modalFeedback.classList.remove('hidden'); showModalMessage('更新中...', '');
+    if (!newTime) {
+        showModalMessage('請選擇一個時間', 'error');
+        return;
+    }
+
+    // --- 樂觀更新 (Optimistic UI Update) ---
+    closeEditModal(); // 立即關閉視窗
+
     const cardToUpdate = document.querySelector(`.card[data-id="${bossId}"]`);
-    const originalTimeDisplay = cardToUpdate.querySelector('.time-display');
-    const originalCountdown = cardToUpdate.querySelector('.date-display');
-    const originalTime = originalTimeDisplay.textContent;
-    originalTimeDisplay.textContent = newTime;
-    originalCountdown.textContent = '更新成功';
+    if (!cardToUpdate) return;
+
+    const timeDisplay = cardToUpdate.querySelector('.time-display');
+    const countdownDisplay = cardToUpdate.querySelector('.date-display');
+
+    // 儲存原始狀態，用於更新失敗時還原
+    const originalTime = timeDisplay.textContent;
+    const originalCountdownHTML = countdownDisplay.innerHTML;
+    const originalCountdownAttr = countdownDisplay.getAttribute('data-countdown-to');
+    const originalTimeClasses = timeDisplay.className;
+
+    // 模擬後端的日期計算邏輯
+    const bossProfile = allProfileData.timers.find(boss => boss.id === bossId);
+    let finalDayOffset = 0;
+    const now = new Date();
+    if (bossProfile && bossProfile.capture_day_offset) {
+        finalDayOffset = bossProfile.capture_day_offset;
+    } else {
+        const reportedTimeToday = new Date();
+        const [hours, minutes] = newTime.split(':');
+        reportedTimeToday.setHours(hours, minutes, 0, 0);
+        if (reportedTimeToday < now) {
+            finalDayOffset = 1; // 已過時間，算隔天
+        } else {
+            finalDayOffset = 0; // 未過時間，算今天
+        }
+    }
+    const newRespawnDate = new Date();
+    newRespawnDate.setDate(newRespawnDate.getDate() + finalDayOffset);
+    const [newHours, newMinutes] = newTime.split(':');
+    newRespawnDate.setHours(newHours, newMinutes, 0, 0);
+
+    // 立即更新 UI
+    timeDisplay.textContent = newTime;
+    timeDisplay.className = 'time-display status-confirmed';
+    countdownDisplay.setAttribute('data-countdown-to', newRespawnDate.toISOString());
+    // --- 樂觀更新結束 ---
+
     try {
-        const response = await fetch('/.netlify/functions/update-timer', { method: 'POST', body: JSON.stringify({ bossId, time: newTime }), headers: { 'Content-Type': 'application/json' } });
-        if (!response.ok) throw new Error(`伺服器錯誤: ${response.statusText}`);
-        showModalMessage('更新成功！', 'success');
-        setTimeout(() => { closeEditModal(); loadAllData(); }, 1000);
+        const response = await fetch('/.netlify/functions/update-timer', {
+            method: 'POST',
+            body: JSON.stringify({ bossId, time: newTime }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!response.ok) {
+            throw new Error(`伺服器錯誤: ${response.statusText}`);
+        }
+        // 更新成功，UI 已是最新，故不做任何事
+        console.log(`Successfully updated ${bossId}`);
     } catch (error) {
         console.error('更新失敗:', error);
-        showModalMessage(`更新失敗: ${error.message}`, 'error');
-        originalTimeDisplay.textContent = originalTime;
-        originalCountdown.textContent = '';
-        setTimeout(closeEditModal, 2000);
+        // 更新失敗，還原 UI
+        timeDisplay.textContent = originalTime;
+        timeDisplay.className = originalTimeClasses;
+        countdownDisplay.innerHTML = originalCountdownHTML;
+        if (originalCountdownAttr) {
+            countdownDisplay.setAttribute('data-countdown-to', originalCountdownAttr);
+        } else {
+            countdownDisplay.removeAttribute('data-countdown-to');
+        }
+        // 提示使用者
+        alert(`更新 ${bossProfile ? bossProfile.name : 'BOSS'} 的時間失敗，請檢查網路或稍後再試。`);
     }
 }
 function showModalMessage(message, type) { modalMessage.textContent = message; modalMessage.className = type; }
