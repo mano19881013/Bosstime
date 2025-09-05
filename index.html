@@ -25,8 +25,8 @@
         <div id="edit-modal">
             <h3>更新 <span id="modal-boss-name"></span> 的時間</h3>
             <form id="edit-form">
-                <p>請選擇時間</p>
-                <input type="time" id="time-input" required>
+                <p>請輸入時間 (24小時制，例如 1842)</p>
+                <input type="text" id="time-input" required pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" placeholder="HH:MM">
                 <div class="modal-buttons">
                     <button type="button" id="cancel-btn">取消</button>
                     <button type="submit" id="save-btn">儲存</button>

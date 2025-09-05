@@ -90,7 +90,7 @@ const createDateTime = (dateStr, timeStr) => {
     return new Date(`${dateStr}T${timeStr}`);
 };
 
-function setupEventListeners() {
+"""function setupEventListeners() {
     editForm.addEventListener('submit', handleFormSubmit);
     cancelBtn.addEventListener('click', closeEditModal);
     modalOverlay.addEventListener('click', (e) => {
@@ -104,7 +104,8 @@ function setupEventListeners() {
     });
     eventForm.addEventListener('submit', handleEventFormSubmit);
     eventCancelBtn.addEventListener('click', resetEventForm);
-}
+    timeInput.addEventListener('input', formatTimeInput);
+}""
 
 function loadSettings() {
     hiddenBosses = JSON.parse(localStorage.getItem('hiddenBosses') || '[]');
@@ -242,15 +243,44 @@ function createCardElement(item) {
     return card;
 }
 
-function startCountdownTimers() { if (countdownInterval) clearInterval(countdownInterval); countdownInterval = setInterval(() => { const countdownElements = document.querySelectorAll('[data-countdown-to]'); countdownElements.forEach(el => { const targetDate = new Date(el.dataset.countdownTo); const now = new Date(); const diff = targetDate - now; if (diff <= 0) { el.textContent = "已出現"; return; } const hours = Math.floor(diff / 3600000); const minutes = Math.floor((diff % 3600000) / 60000); const seconds = Math.floor((diff % 60000) / 1000); el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`; }); }, 1000); }
+function startCountdownTimers() {
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => {
+        let needsReload = false;
+        const countdownElements = document.querySelectorAll('[data-countdown-to]');
+        countdownElements.forEach(el => {
+            const targetDate = new Date(el.dataset.countdownTo);
+            const now = new Date();
+            const diff = targetDate - now;
+            if (diff <= 0) {
+                el.textContent = "已出現";
+                needsReload = true;
+                return;
+            }
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        });
+
+        if (needsReload) {
+            // 使用一個小的延遲來避免在一個週期內重複觸發
+            setTimeout(loadAllData, 1000);
+            clearInterval(countdownInterval); // 清除當前的計時器
+        }
+    }, 1000);
+}
+
 function openEditModal(bossId, bossName, currentTime) { modal.dataset.editingId = bossId; modalBossName.textContent = bossName; timeInput.value = currentTime !== '待確認' ? currentTime : ''; modalOverlay.classList.remove('hidden'); timeInput.focus(); }
 function closeEditModal() { modalOverlay.classList.add('hidden'); modalFeedback.classList.add('hidden'); saveBtn.disabled = false; timeInput.disabled = false; }
 async function handleFormSubmit(event) {
     event.preventDefault();
     const bossId = modal.dataset.editingId;
     const newTime = timeInput.value;
-    if (!newTime) {
-        showModalMessage('請選擇一個時間', 'error');
+
+    const timeRegex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!newTime || !timeRegex.test(newTime)) {
+        alert('請輸入有效的時間格式 (HH:MM)，例如 09:30 或 22:00。');
         return;
     }
 
@@ -327,6 +357,23 @@ function handleHideClick(bossId) { if (!hiddenBosses.includes(bossId)) { hiddenB
 function handleUnhideClick(bossId) { hiddenBosses = hiddenBosses.filter(id => id !== bossId); saveHiddenBosses(); loadAllData(); }
 function toggleShowHidden() { showHidden = !showHidden; saveShowHidden(); updateToggleButton(); loadAllData(); }
 function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS'; }
+
+function formatTimeInput(e) {
+    let input = e.target.value.replace(/\D/g, ''); // 移除非數字字元
+    if (input.length > 4) {
+        input = input.slice(0, 4);
+    }
+
+    let formattedInput = '';
+    if (input.length > 2) {
+        formattedInput = input.slice(0, 2) + ':' + input.slice(2);
+    } else {
+        formattedInput = input;
+    }
+
+    e.target.value = formattedInput;
+}
+
 function openEventManager() { renderEventManagerList(); resetEventForm(); eventManagerOverlay.classList.remove('hidden'); }
 function closeEventManager() { eventManagerOverlay.classList.add('hidden'); }
 function renderEventManagerList() {
