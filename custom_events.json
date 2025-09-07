@@ -152,9 +152,10 @@
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
-      "二"
+      "二",
+      "四"
     ],
-    "modified": "2025-09-07T12:38:56.731591+00:00",
+    "modified": "2025-09-07T12:42:49.857223+00:00",
     "deleted": false,
     "id": "試煉-1樓5樓_1757248669"
   },
@@ -192,9 +193,9 @@
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
-      "四"
+      "日"
     ],
-    "modified": "2025-09-07T12:40:18.054360+00:00",
+    "modified": "2025-09-07T12:42:33.669501+00:00",
     "deleted": false,
     "id": "試煉-4樓_1757248818"
   },
