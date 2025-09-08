@@ -200,5 +200,14 @@
     "modified": "2025-09-08T13:49:03.450155+00:00",
     "deleted": false,
     "id": "襲擊王_1757339343"
+  },
+  "raid_boss_schedule": {
+    "schedule_generated_week": 36,
+    "weekly_schedule": {
+      "3": "A",
+      "5": "B",
+      "7": "A",
+      "1": "A"
+    }
   }
 }
