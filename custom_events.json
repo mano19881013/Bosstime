@@ -188,7 +188,7 @@
   "襲擊王_1757339343": {
     "name": "襲擊王",
     "time": "22:15",
-    "notify_minutes": 10,
+    "notify_minutes": 15,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
@@ -197,7 +197,7 @@
       "五",
       "日"
     ],
-    "modified": "2025-09-08T14:43:17.418378+00:00",
+    "modified": "2025-09-08T14:43:29.814586+00:00",
     "deleted": false,
     "id": "襲擊王_1757339343"
   },
