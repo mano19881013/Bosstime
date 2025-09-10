@@ -1,4 +1,4 @@
-// app.js (★加入倒數結束後自動刷新功能)
+// app.js (★移除通知功能，恢復穩定版)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -40,7 +40,7 @@ let hiddenBosses = [];
 let showHidden = false;
 let allEventsData = {};
 let allProfileData = {};
-let isReloading = false; // 用於防止重複刷新的標記
+let isReloading = false; 
 
 // --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
@@ -56,42 +56,13 @@ const manageEventsBtn = document.getElementById('manage-events-btn');
 
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
-    requestNotificationPermission();
     loadSettings();
     loadAllData();
     setupEventListeners();
 });
 
-// **** 通知功能 ****
-function requestNotificationPermission() {
-    if (!("Notification" in window)) { return; }
-    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-        Notification.requestPermission();
-    }
-}
-
-function scheduleNotifications(items) {
-    if (Notification.permission !== "granted") { return; }
-    const now = new Date().getTime();
-    items.forEach(item => {
-        const notifyMinutes = item.notify_minutes || 0;
-        if (item.dateTime && notifyMinutes > 0) {
-            const notifyTime = item.dateTime.getTime() - (notifyMinutes * 60 * 1000);
-            if (notifyTime > now) {
-                const delay = notifyTime - now;
-                setTimeout(() => {
-                    new Notification(`${item.name} 即將開始！`, {
-                        body: `將於 ${notifyMinutes} 分鐘後 (${item.time}) 開始。`,
-                        tag: item.id
-                    });
-                }, delay);
-            }
-        }
-    });
-}
-
 async function loadAllData() {
-    isReloading = true; // 開始載入時，設定標記
+    isReloading = true;
     bossContainer.innerHTML = '<p class="loading">正在讀取資料...</p>';
     try {
         allProfileData = GAME_PROFILE_DATA;
@@ -106,7 +77,7 @@ async function loadAllData() {
         console.error('載入資料時發生錯誤:', error);
         bossContainer.innerHTML = `<p style="color: red;">資料載入失敗: ${error.message}</p>`;
     } finally {
-        setTimeout(() => { isReloading = false; }, 2000); // 載入完成2秒後，清除標記
+        setTimeout(() => { isReloading = false; }, 2000);
     }
 }
 
@@ -131,7 +102,6 @@ function renderCombinedList(profile, timers, events) {
     });
 
     startCountdownTimers();
-    scheduleNotifications(combinedList);
 }
 
 function createCardElement(item) {
@@ -176,7 +146,6 @@ function createCardElement(item) {
     return card;
 }
 
-// **** 核心修改處 ****
 function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
@@ -190,11 +159,10 @@ function startCountdownTimers() {
                 el.textContent = "已出現";
                 el.removeAttribute('data-countdown-to');
                 
-                // 如果目前沒有在重載中，就觸發一次刷新
                 if (!isReloading) {
                     console.log("倒數計時結束，觸發刷新...");
-                    setTimeout(loadAllData, 1000); // 延遲1秒刷新，避免畫面閃爍
-                    isReloading = true; // 設定標記，防止多個計時器同時結束時重複刷新
+                    setTimeout(loadAllData, 1000); 
+                    isReloading = true;
                 }
             } else {
                 const hours = Math.floor(diff / 3600000);
