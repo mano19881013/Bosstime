@@ -1,4 +1,4 @@
-// app.js (★最終完整修復版)
+// app.js (★加入倒數結束後自動刷新功能)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -6,12 +6,7 @@ const GITHUB_REPO = 'Bosstime';
 const GITHUB_BRANCH = 'main';
 const GAME_PROFILE_DATA = {
   "game_name": "Boss計時器V3.0",
-  "cloud_settings": {
-    "repo_user": "mano19881013",
-    "repo_name": "Bosstime",
-    "timers_file": "timers_data.json",
-    "events_file": "custom_events.json"
-  },
+  "cloud_settings": { "repo_user": "mano19881013", "repo_name": "Bosstime", "timers_file": "timers_data.json", "events_file": "custom_events.json" },
   "timers": [
     { "id": "boss_01", "level": 50, "label": "LV.50", "name": "武庫拉", "type": "floating", "time": "", "capture_day_offset": 1 },
     { "id": "boss_02", "level": 55, "label": "LV.55", "name": "格里貢", "type": "floating", "time": "", "capture_day_offset": 1 },
@@ -36,12 +31,8 @@ const GAME_PROFILE_DATA = {
     { "id": "fixed_07", "level": 63, "label": "LV.63", "name": "布萊登", "type": "fixed", "time": "23:00" },
     { "id": "boss_5d332052", "level": 112, "label": "LV.112", "name": "索尼安", "type": "floating", "time": "", "capture_day_offset": 1 }
   ],
-  "filters": [
-    { "label": "全部", "min_level": 0 },
-    { "label": "LV.62+", "min_level": 62 }
-  ]
+  "filters": [ { "label": "全部", "min_level": 0 }, { "label": "LV.62+", "min_level": 62 } ]
 };
-
 
 // --- 全域變數 ---
 let countdownInterval;
@@ -49,6 +40,7 @@ let hiddenBosses = [];
 let showHidden = false;
 let allEventsData = {};
 let allProfileData = {};
+let isReloading = false; // 用於防止重複刷新的標記
 
 // --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
@@ -59,32 +51,47 @@ const editForm = document.getElementById('edit-form');
 const timeInput = document.getElementById('time-input');
 const cancelBtn = document.getElementById('cancel-btn');
 const saveBtn = document.getElementById('save-btn');
-const modalFeedback = document.getElementById('modal-feedback');
-const modalMessage = document.getElementById('modal-message');
 const toggleHiddenBtn = document.getElementById('toggle-hidden-btn');
 const manageEventsBtn = document.getElementById('manage-events-btn');
-const eventManagerOverlay = document.getElementById('event-manager-overlay');
-const eventForm = document.getElementById('event-form');
-const eventIdInput = document.getElementById('event-id-input');
-const eventNameInput = document.getElementById('event-name-input');
-const eventTimeInput = document.getElementById('event-time-input');
-const eventDaysCheckboxes = document.getElementById('event-days-checkboxes');
-const eventNotifyInput = document.getElementById('event-notify-input');
-const eventCancelBtn = document.getElementById('event-cancel-btn');
-const closeEventManagerBtn = document.getElementById('close-event-manager-btn');
-const eventListContainer = document.getElementById('event-list-container');
-
 
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
+    requestNotificationPermission();
     loadSettings();
     loadAllData();
     setupEventListeners();
-    createDayCheckboxes();
 });
 
+// **** 通知功能 ****
+function requestNotificationPermission() {
+    if (!("Notification" in window)) { return; }
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+    }
+}
+
+function scheduleNotifications(items) {
+    if (Notification.permission !== "granted") { return; }
+    const now = new Date().getTime();
+    items.forEach(item => {
+        const notifyMinutes = item.notify_minutes || 0;
+        if (item.dateTime && notifyMinutes > 0) {
+            const notifyTime = item.dateTime.getTime() - (notifyMinutes * 60 * 1000);
+            if (notifyTime > now) {
+                const delay = notifyTime - now;
+                setTimeout(() => {
+                    new Notification(`${item.name} 即將開始！`, {
+                        body: `將於 ${notifyMinutes} 分鐘後 (${item.time}) 開始。`,
+                        tag: item.id
+                    });
+                }, delay);
+            }
+        }
+    });
+}
 
 async function loadAllData() {
+    isReloading = true; // 開始載入時，設定標記
     bossContainer.innerHTML = '<p class="loading">正在讀取資料...</p>';
     try {
         allProfileData = GAME_PROFILE_DATA;
@@ -93,13 +100,13 @@ async function loadAllData() {
             throw new Error(`伺服器錯誤: ${response.statusText}`);
         }
         const data = await response.json();
-        const timersData = data.timersData;
-        const eventsData = data.eventsData;
-        allEventsData = eventsData;
-        renderCombinedList(allProfileData, timersData, eventsData);
+        allEventsData = data.eventsData;
+        renderCombinedList(allProfileData, data.timersData, data.eventsData);
     } catch (error) {
         console.error('載入資料時發生錯誤:', error);
         bossContainer.innerHTML = `<p style="color: red;">資料載入失敗: ${error.message}</p>`;
+    } finally {
+        setTimeout(() => { isReloading = false; }, 2000); // 載入完成2秒後，清除標記
     }
 }
 
@@ -114,9 +121,7 @@ function renderCombinedList(profile, timers, events) {
     }
     
     if (combinedList.length === 0) {
-        const emptyMsg = document.createElement('p');
-        emptyMsg.textContent = '沒有即將到來的項目。';
-        bossContainer.appendChild(emptyMsg);
+        bossContainer.innerHTML = '<p>沒有即將到來的項目。</p>';
         return;
     }
 
@@ -126,8 +131,8 @@ function renderCombinedList(profile, timers, events) {
     });
 
     startCountdownTimers();
+    scheduleNotifications(combinedList);
 }
-
 
 function createCardElement(item) {
     const card = document.createElement('div');
@@ -135,14 +140,7 @@ function createCardElement(item) {
     
     const infoDiv = document.createElement('div');
     infoDiv.className = 'info';
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'name';
-    nameDiv.textContent = item.name || '未命名';
-    const subInfoDiv = document.createElement('div');
-    subInfoDiv.className = 'sub-info';
-    subInfoDiv.textContent = item.itemType === 'boss' ? item.label : (Array.isArray(item.days) ? item.days.join(', ') : '未設定');
-    infoDiv.appendChild(nameDiv);
-    infoDiv.appendChild(subInfoDiv);
+    infoDiv.innerHTML = `<div class="name">${item.name || '未命名'}</div><div class="sub-info">${item.itemType === 'boss' ? item.label : (Array.isArray(item.days) ? item.days.join(', ') : '未設定')}</div>`;
 
     const timeInfoDiv = document.createElement('div');
     timeInfoDiv.className = 'time-info';
@@ -162,11 +160,8 @@ function createCardElement(item) {
     timeInfoDiv.appendChild(timeDisplayDiv);
     timeInfoDiv.appendChild(dateDisplayDiv);
 
-    if (item.time === '待確認') {
-        timeDisplayDiv.classList.add('status-pending');
-    } else {
-        timeDisplayDiv.classList.add('status-confirmed');
-    }
+    if (item.time === '待確認') timeDisplayDiv.classList.add('status-pending');
+    else timeDisplayDiv.classList.add('status-confirmed');
     if (item.isEditable) card.classList.add('editable');
     if (item.level >= 62) card.classList.add('high-level');
     if (item.itemType === 'event') card.classList.add('event-card');
@@ -181,7 +176,7 @@ function createCardElement(item) {
     return card;
 }
 
-
+// **** 核心修改處 ****
 function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
@@ -194,6 +189,13 @@ function startCountdownTimers() {
             if (diff <= 0) {
                 el.textContent = "已出現";
                 el.removeAttribute('data-countdown-to');
+                
+                // 如果目前沒有在重載中，就觸發一次刷新
+                if (!isReloading) {
+                    console.log("倒數計時結束，觸發刷新...");
+                    setTimeout(loadAllData, 1000); // 延遲1秒刷新，避免畫面閃爍
+                    isReloading = true; // 設定標記，防止多個計時器同時結束時重複刷新
+                }
             } else {
                 const hours = Math.floor(diff / 3600000);
                 const minutes = Math.floor((diff % 3600000) / 60000);
@@ -205,8 +207,7 @@ function startCountdownTimers() {
 }
 
 function processAndCombineData(profile, timers, events, now) {
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const todayStrFull = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const todayStrFull = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
     const todayStr = weekDays[now.getDay()];
     const allBosses = profile.timers.map(boss => {
@@ -215,8 +216,7 @@ function processAndCombineData(profile, timers, events, now) {
             bossData = { time: boss.time, date: '每日固定', isEditable: false, dateTime: createDateTime(todayStrFull, boss.time) };
         } else {
             let remoteData = timers[boss.id] || { time: '待確認', date: '' };
-            const floatingDateTime = createDateTime(remoteData.date, remoteData.time);
-            bossData = { ...remoteData, isEditable: true, dateTime: floatingDateTime };
+            bossData = { ...remoteData, isEditable: true, dateTime: createDateTime(remoteData.date, remoteData.time) };
         }
         return { ...boss, ...bossData, itemType: 'boss', notify_minutes: 3 };
     });
@@ -247,35 +247,22 @@ const createDateTime = (dateStr, timeStr) => {
 function loadSettings() {
     hiddenBosses = JSON.parse(localStorage.getItem('hiddenBosses') || '[]');
     showHidden = JSON.parse(localStorage.getItem('showHidden') || 'false');
-    if (toggleHiddenBtn) {
-        updateToggleButton();
-    }
+    if (toggleHiddenBtn) updateToggleButton();
 }
 
-function saveHiddenBosses() {
-    localStorage.setItem('hiddenBosses', JSON.stringify(hiddenBosses));
-}
-
-function saveShowHidden() {
-    localStorage.setItem('showHidden', JSON.stringify(showHidden));
-}
-
-function updateToggleButton() {
-    toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS';
-}
+function saveHiddenBosses() { localStorage.setItem('hiddenBosses', JSON.stringify(hiddenBosses)); }
+function saveShowHidden() { localStorage.setItem('showHidden', JSON.stringify(showHidden)); }
+function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS'; }
 
 function setupEventListeners() {
     if (editForm) {
         editForm.addEventListener('submit', handleFormSubmit);
         cancelBtn.addEventListener('click', closeEditModal);
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) closeEditModal();
-        });
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeEditModal(); });
         timeInput.addEventListener('input', formatTimeInput);
     }
-    if (toggleHiddenBtn) {
-        toggleHiddenBtn.addEventListener('click', toggleShowHidden);
-    }
+    if (toggleHiddenBtn) toggleHiddenBtn.addEventListener('click', toggleShowHidden);
+    if (manageEventsBtn) manageEventsBtn.addEventListener('click', () => alert('事件管理功能尚未啟用。'));
 }
 
 function openEditModal(bossId, bossName, currentTime) { 
@@ -288,9 +275,6 @@ function openEditModal(bossId, bossName, currentTime) {
 
 function closeEditModal() { 
     modalOverlay.classList.add('hidden'); 
-    modalFeedback.classList.add('hidden'); 
-    saveBtn.disabled = false; 
-    timeInput.disabled = false; 
 }
 
 async function handleFormSubmit(event) {
@@ -299,7 +283,7 @@ async function handleFormSubmit(event) {
     const newTime = timeInput.value;
     const timeRegex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
     if (!newTime || !timeRegex.test(newTime)) {
-        alert('請輸入有效的時間格式 (HH:MM)，例如 09:30 或 22:00。');
+        alert('請輸入有效的時間格式 (HH:MM)。');
         return;
     }
     closeEditModal(); 
@@ -310,13 +294,11 @@ async function handleFormSubmit(event) {
             body: JSON.stringify({ bossId, time: newTime }),
             headers: { 'Content-Type': 'application/json' }
         });
-        if (!response.ok) {
-            throw new Error(`伺服器錯誤: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`伺服器錯誤: ${response.statusText}`);
         await loadAllData();
     } catch (error) {
         console.error('更新失敗:', error);
-        alert(`更新 BOSS 的時間失敗，請檢查網路或稍後再試。`);
+        alert(`更新 BOSS 的時間失敗，請檢查網路。`);
         await loadAllData();
     }
 }
@@ -331,33 +313,7 @@ function toggleShowHidden() {
 function formatTimeInput(e) {
     let input = e.target.value.replace(/\D/g, '');
     if (input.length > 4) input = input.slice(0, 4);
-    let formattedInput = '';
-    if (input.length > 2) {
-        formattedInput = input.slice(0, 2) + ':' + input.slice(2);
-    } else {
-        formattedInput = input;
-    }
-    e.target.value = formattedInput;
+    if (input.length > 2) input = input.slice(0, 2) + ':' + input.slice(2);
+    else input = input;
+    e.target.value = input;
 }
-
-function createDayCheckboxes() { 
-    if (!eventDaysCheckboxes) return;
-    const days = ['每日', '日', '一', '二', '三', '四', '五', '六']; 
-    days.forEach(day => { 
-        const div = document.createElement('div'); 
-        div.innerHTML = `<label><input type="checkbox" value="${day}"> ${day}</label>`; 
-        eventDaysCheckboxes.appendChild(div); 
-    }); 
-}
-
-// 為了穩定性，暫時禁用通知和部分按鈕功能
-function requestNotificationPermission() { /* 禁用 */ }
-function scheduleNotifications(items) { /* 禁用 */ }
-// 為了穩定性，管理事件相關功能也先禁用
-function openEventManager() { alert('事件管理功能暫時禁用'); }
-function closeEventManager() { }
-function renderEventManagerList() {}
-function fillEventForm(eventId) {}
-function resetEventForm() {}
-async function handleEventFormSubmit(event) {}
-async function toggleEventDeleted(eventId, shouldDelete) {}
