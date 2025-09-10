@@ -124,16 +124,15 @@ function saveShowHidden() {
 async function loadAllData() {
     bossContainer.innerHTML = '<p class="loading">正在從 GitHub 讀取資料...</p>';
     try {
-        const [profileRes, timersRes, eventsRes] = await Promise.all([
-            fetch(PROFILE_PATH),
+        allProfileData = GAME_PROFILE_DATA; // ★ 修改：使用內嵌的資料
+        const [timersRes, eventsRes] = await Promise.all([
             fetch(TIMERS_DATA_URL),
             fetch(CUSTOM_EVENTS_URL)
         ]);
-        allProfileData = await profileRes.json(); // ★ 修改：儲存到全域變數
         const timersData = await timersRes.json();
         const eventsData = await eventsRes.json();
         allEventsData = eventsData;
-        renderCombinedList(allProfileData, timersData, eventsData); // ★ 修改：使用全域變數
+        renderCombinedList(allProfileData, timersData, eventsData);
     } catch (error) {
         console.error('載入資料時發生錯誤:', error);
         bossContainer.innerHTML = '<p style="color: red;">資料載入失敗，請檢查網路連線或 GitHub 設定。</p>';
@@ -246,28 +245,37 @@ function createCardElement(item) {
 function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
-        let needsReload = false;
         const countdownElements = document.querySelectorAll('[data-countdown-to]');
         countdownElements.forEach(el => {
             const targetDate = new Date(el.dataset.countdownTo);
             const now = new Date();
             const diff = targetDate - now;
-            if (diff <= 0) {
-                el.textContent = "已出現";
-                needsReload = true;
-                return;
-            }
-            const hours = Math.floor(diff / 3600000);
-            const minutes = Math.floor((diff % 3600000) / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-            el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        });
 
-        if (needsReload) {
-            // 使用一個小的延遲來避免在一個週期內重複觸發
-            setTimeout(loadAllData, 1000);
-            clearInterval(countdownInterval); // 清除當前的計時器
-        }
+            if (diff <= 0) {
+                const card = el.closest('.card');
+                if (card) {
+                    // 標記為已出現
+                    el.textContent = "已出現";
+                    el.removeAttribute('data-countdown-to'); // 停止這個倒數計時器
+
+                    // 根據是否顯示隱藏的項目來決定是隱藏還是移到底部
+                    if (!showHidden) {
+                        const bossId = card.dataset.id;
+                        if (!hiddenBosses.includes(bossId)) {
+                             card.style.display = 'none'; // 直接隱藏
+                        }
+                    } else {
+                        // 移至列表底部
+                        bossContainer.appendChild(card);
+                    }
+                }
+            } else {
+                const hours = Math.floor(diff / 3600000);
+                const minutes = Math.floor((diff % 3600000) / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+        });
     }, 1000);
 }
 
