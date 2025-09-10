@@ -596,14 +596,19 @@ function formatTimeInput(e) {
 
 function openEventManager() { renderEventManagerList(); resetEventForm(); eventManagerOverlay.classList.remove('hidden'); }
 function closeEventManager() { eventManagerOverlay.classList.add('hidden'); }
+
+// **** 修改過的函式 ****
 function renderEventManagerList() {
     eventListContainer.innerHTML = '';
-    const sortedEvents = Object.values(allEventsData).sort((a, b) => new Date(b.modified) - new Date(a.modified));
+    // 新增 .filter(event => !event.deleted) 來過濾掉已刪除的事件
+    const sortedEvents = Object.values(allEventsData)
+        .filter(event => event && !event.deleted)
+        .sort((a, b) => new Date(b.modified) - new Date(a.modified));
+    
     sortedEvents.forEach(event => {
-        if (!event) return; // Add a guard clause for null/undefined events
+        // 現在迴圈內的 event 肯定不是 undefined 或 deleted
         const item = document.createElement('div');
         item.className = 'event-list-item';
-        if (event.deleted) item.classList.add('deleted');
 
         const daysText = Array.isArray(event.days) ? event.days.join(', ') : '未設定';
 
@@ -613,14 +618,15 @@ function renderEventManagerList() {
             </div>
             <div class="event-item-actions">
                 <button class="edit-event-btn">編輯</button>
-                <button class="toggle-delete-event-btn">${event.deleted ? '恢復' : '刪除'}</button>
+                <button class="toggle-delete-event-btn">刪除</button>
             </div>
         `;
         item.querySelector('.edit-event-btn').addEventListener('click', () => fillEventForm(event.id));
-        item.querySelector('.toggle-delete-event-btn').addEventListener('click', () => toggleEventDeleted(event.id, !event.deleted));
+        item.querySelector('.toggle-delete-event-btn').addEventListener('click', () => toggleEventDeleted(event.id, true)); // 直接設為刪除
         eventListContainer.appendChild(item);
     });
 }
+
 function fillEventForm(eventId) { 
     const event = allEventsData[eventId]; 
     if (!event) return; // Guard clause
