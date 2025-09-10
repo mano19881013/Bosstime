@@ -1,4 +1,4 @@
-// app.js (★移除通知功能，恢復穩定版)
+// app.js (★已過去的浮動BOSS顯示為待確認)
 
 // --- 設定區 ---
 const GITHUB_USER = 'mano19881013';
@@ -174,6 +174,7 @@ function startCountdownTimers() {
     }, 1000);
 }
 
+// **** 核心修改處 ****
 function processAndCombineData(profile, timers, events, now) {
     const todayStrFull = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
@@ -186,7 +187,7 @@ function processAndCombineData(profile, timers, events, now) {
             let remoteData = timers[boss.id] || { time: '待確認', date: '' };
             bossData = { ...remoteData, isEditable: true, dateTime: createDateTime(remoteData.date, remoteData.time) };
         }
-        return { ...boss, ...bossData, itemType: 'boss', notify_minutes: 3 };
+        return { ...boss, ...bossData, itemType: 'boss' };
     });
     const allEvents = Object.values(events)
         .filter(event => event && !event.deleted && event.days && (event.days.includes('每日') || event.days.includes(todayStr)))
@@ -194,17 +195,34 @@ function processAndCombineData(profile, timers, events, now) {
     const combinedList = [...allBosses, ...allEvents];
     const nowTimestamp = now.getTime();
     const upcoming = [], past = [], unknown = [];
+    
     combinedList.forEach(item => {
         if (item.dateTime) {
-            if (item.dateTime.getTime() < nowTimestamp) past.push(item);
-            else upcoming.push(item);
+            if (item.dateTime.getTime() < nowTimestamp) {
+                // 如果是已過去的浮動BOSS，將其狀態改為待確認
+                if (item.type === 'floating') {
+                    item.time = '待確認';
+                    item.date = '';
+                }
+                past.push(item);
+            } else {
+                upcoming.push(item);
+            }
         } else {
+            // 沒有時間的項目，如果不是固定的，也視為待確認
+            if (item.type !== 'fixed') {
+                 item.time = '待確認';
+                 item.date = '';
+            }
             unknown.push(item);
         }
     });
+
     upcoming.sort((a, b) => a.dateTime - b.dateTime);
     past.sort((a, b) => a.dateTime - b.dateTime);
-    return [...upcoming, ...past, ...unknown];
+    
+    // 將待確認的項目放在列表最下方
+    return [...upcoming, ...past.filter(p => p.type === 'fixed'), ...past.filter(p => p.type !== 'fixed'), ...unknown];
 }
 
 const createDateTime = (dateStr, timeStr) => {
