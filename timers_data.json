@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "12:37",
+    "time": "18:39",
     "date": "2025-09-10",
-    "modified": "2025-09-09T22:41:09.107215+00:00",
+    "modified": "2025-09-10T05:27:25.319864+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -24,9 +24,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "13:12",
+    "time": "19:14",
     "date": "2025-09-10",
-    "modified": "2025-09-10T01:36:49.231886+00:00",
+    "modified": "2025-09-10T05:27:27.774749+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -60,9 +60,9 @@
     "is_predicted": false
   },
   "boss_11": {
-    "time": "12:37",
-    "date": "2025-09-10",
-    "modified": "2025-09-09T22:41:25.608126+00:00",
+    "time": "00:39",
+    "date": "2025-09-11",
+    "modified": "2025-09-10T05:27:32.775765+00:00",
     "is_predicted": false
   },
   "boss_12": {
@@ -78,15 +78,15 @@
     "is_predicted": false
   },
   "boss_14": {
-    "time": "23:51",
-    "date": "2025-09-10",
-    "modified": "2025-09-10T03:51:29.172277+00:00",
-    "is_predicted": true
+    "time": "00:47",
+    "date": "2025-09-11",
+    "modified": "2025-09-10T05:27:36.576127+00:00",
+    "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "13:19",
-    "date": "2025-09-10",
-    "modified": "2025-09-09T22:41:33.515450+00:00",
+    "time": "01:25",
+    "date": "2025-09-11",
+    "modified": "2025-09-10T05:27:39.458242+00:00",
     "is_predicted": false
   }
 }
