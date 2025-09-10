@@ -202,11 +202,11 @@
     "id": "襲擊王_1757339343"
   },
   "raid_boss_schedule": {
-    "schedule_generated_week": 36,
+    "schedule_generated_week": 37,
     "weekly_schedule": {
-      "3": "A",
-      "5": "B",
-      "7": "A",
+      "3": "B",
+      "5": "A",
+      "7": "B",
       "1": "A"
     }
   },
@@ -315,8 +315,8 @@
     "days": [
       "每日"
     ],
-    "modified": "2025-08-18T12:53:45.131882+00:00",
-    "deleted": false
+    "modified": "2025-09-10T22:46:02.567998+00:00",
+    "deleted": true
   },
   "襲擊戰_1752915736": {
     "id": "襲擊戰_1752915736",
