@@ -196,15 +196,16 @@ const GAME_PROFILE_DATA = {
     }
   ]
 };
-const TIMERS_DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/timers_data.json`;
-const CUSTOM_EVENTS_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/custom_events.json`;
+// **** 我們不再需要這些 GitHub URL 了 ****
+// const TIMERS_DATA_URL = `https://raw.githubusercontent.com/...`;
+// const CUSTOM_EVENTS_URL = `https://raw.githubusercontent.com/...`;
 
 // --- 全域變數 ---
 let countdownInterval;
 let hiddenBosses = [];
 let showHidden = false;
 let allEventsData = {};
-let allProfileData = {}; // ★ 新增，用於樂觀更新
+let allProfileData = {};
 
 // --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
@@ -312,23 +313,30 @@ function saveShowHidden() {
     localStorage.setItem('showHidden', JSON.stringify(showHidden));
 }
 
+// **** 修改過的核心函式 ****
 async function loadAllData() {
-    bossContainer.innerHTML = '<p class="loading">正在從 GitHub 讀取資料...</p>';
+    bossContainer.innerHTML = '<p class="loading">正在讀取資料...</p>';
     try {
         allProfileData = GAME_PROFILE_DATA;
-        const [timersRes, eventsRes] = await Promise.all([
-            fetch(TIMERS_DATA_URL),
-            fetch(CUSTOM_EVENTS_URL)
-        ]);
-        const timersData = await timersRes.json();
-        const eventsData = await eventsRes.json();
+
+        // 只需一次 fetch，呼叫我們自己的後端 function
+        const response = await fetch('/.netlify/functions/getData');
+        if (!response.ok) {
+            throw new Error(`伺服器錯誤: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        const timersData = data.timersData;
+        const eventsData = data.eventsData;
+        
         allEventsData = eventsData;
         renderCombinedList(allProfileData, timersData, eventsData);
     } catch (error) {
         console.error('載入資料時發生錯誤:', error);
-        bossContainer.innerHTML = '<p style="color: red;">資料載入失敗，請檢查網路連線或 GitHub 設定。</p>';
+        bossContainer.innerHTML = '<p style="color: red;">資料載入失敗，請檢查網路連線或伺服器狀態。</p>';
     }
 }
+
 
 function renderCombinedList(profile, timers, events) {
     bossContainer.innerHTML = '';
@@ -338,14 +346,20 @@ function renderCombinedList(profile, timers, events) {
     if (!showHidden) {
         combinedList = combinedList.filter(item => !(item.itemType === 'boss' && hiddenBosses.includes(item.id)));
     }
-    combinedList.forEach(item => {
+    const upcomingOnlyList = combinedList.filter(item => {
+        if (item.itemType === 'event' && item.dateTime < now) {
+            return false;
+        }
+        return true;
+    });
+    upcomingOnlyList.forEach(item => {
         const card = createCardElement(item);
         bossContainer.appendChild(card);
     });
-    startCountdownTimers();
+    const upcomingForCountdown = upcomingOnlyList.filter(item => item.dateTime && item.dateTime >= now);
+    startCountdownTimers(upcomingForCountdown);
 }
 
-// ★★★ 修改點在這裡 ★★★
 function processAndCombineData(profile, timers, events, now) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayStrFull = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -359,33 +373,32 @@ function processAndCombineData(profile, timers, events, now) {
         } else {
             let remoteData = timers[boss.id] || { time: '待確認', date: '' };
             const floatingDateTime = createDateTime(remoteData.date, remoteData.time);
-            if (floatingDateTime && floatingDateTime < now) {
-                remoteData = { time: '待確認', date: '' };
-                bossData = { ...remoteData, isEditable: true, dateTime: null };
-            } else {
-                bossData = { ...remoteData, isEditable: true, dateTime: floatingDateTime };
-            }
+            bossData = { ...remoteData, isEditable: true, dateTime: floatingDateTime };
         }
         return {
             ...boss,
             ...bossData,
             itemType: 'boss',
-            notify_minutes: 3 // ★ 為所有 BOSS 都加上 3 分鐘的提醒設定 ★
+            notify_minutes: 3
         };
     });
 
     const allEvents = Object.values(events)
-        .filter(event => !event.deleted && (event.days.includes('每日') || event.days.includes(todayStr)))
+        .filter(event => event && !event.deleted && event.days && (event.days.includes('每日') || event.days.includes(todayStr)))
         .map(event => ({ ...event, itemType: 'event', dateTime: createDateTime(todayStrFull, event.time) }));
 
-    const filteredList = [...allBosses, ...allEvents].filter(item => !item.dateTime || item.dateTime >= now);
+    const combinedList = [...allBosses, ...allEvents];
 
-    return filteredList.sort((a, b) => {
-        if (!a.dateTime && b.dateTime) return 1;
-        if (a.dateTime && !b.dateTime) return -1;
-        if (!a.dateTime && !b.dateTime) return 0;
-        return a.dateTime - b.dateTime;
+    combinedList.sort((a, b) => {
+        if (a.dateTime && b.dateTime) {
+            return a.dateTime - b.dateTime;
+        }
+        if (a.dateTime) return -1;
+        if (b.dateTime) return 1;
+        return 0;
     });
+
+    return combinedList;
 }
 
 function createCardElement(item) {
@@ -400,15 +413,26 @@ function createCardElement(item) {
         card.classList.add('event-card');
     }
     const isHidden = hiddenBosses.includes(item.id);
-    const subInfoHTML = `<div class="sub-info">${item.itemType === 'boss' ? item.label : item.days.join(', ')}</div>`;
+    const subInfoHTML = `<div class="sub-info">${item.itemType === 'boss' ? item.label : (Array.isArray(item.days) ? item.days.join(', ') : '未設定')}</div>`;
     const toggleButtonHTML = item.itemType === 'boss' ? `
         <button class="card-toggle-btn ${isHidden ? 'restore-btn' : 'hide-btn'}" title="${isHidden ? '恢復' : '隱藏'}">
             ${isHidden ? '⊕' : '✕'}
         </button>
     ` : '';
-    const displayDate = item.date && item.date !== '每日固定' ? item.date.substring(5) : '';
+    
+    let displayDate = '';
+    if (item.date && item.date !== '每日固定') {
+        displayDate = item.date.substring(5);
+    }
+
     let timeDisplayHTML = `<div class="time-display ${item.time === '待確認' ? 'status-pending' : 'status-confirmed'}">${item.time}</div>`;
-    timeDisplayHTML += item.dateTime ? `<div class="date-display" data-countdown-to="${item.dateTime.toISOString()}">--:--:--</div>` : `<div class="date-display">${displayDate}</div>`;
+    
+    if (item.dateTime && new Date(item.dateTime) >= new Date()) {
+        timeDisplayHTML += `<div class="date-display" data-countdown-to="${item.dateTime.toISOString()}">--:--:--</div>`;
+    } else {
+        timeDisplayHTML += `<div class="date-display">${displayDate}</div>`;
+    }
+
     card.innerHTML = `
         ${toggleButtonHTML}
         <div class="info">
@@ -433,38 +457,35 @@ function createCardElement(item) {
     return card;
 }
 
-function startCountdownTimers() {
+function startCountdownTimers(items) {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
-        const countdownElements = document.querySelectorAll('[data-countdown-to]');
-        countdownElements.forEach(el => {
-            const targetDate = new Date(el.dataset.countdownTo);
-            const now = new Date();
-            const diff = targetDate - now;
+        items.forEach(item => {
+            const el = document.querySelector(`.card[data-id="${item.id}"] .date-display`);
+            if (el) {
+                const targetDate = new Date(item.dateTime);
+                const now = new Date();
+                const diff = targetDate - now;
 
-            if (diff <= 0) {
-                const card = el.closest('.card');
-                if (card) {
-                    // 標記為已出現
+                if (diff <= 0) {
                     el.textContent = "已出現";
-                    el.removeAttribute('data-countdown-to'); // 停止這個倒數計時器
-
-                    // 根據是否顯示隱藏的項目來決定是隱藏還是移到底部
-                    if (!showHidden) {
-                        const bossId = card.dataset.id;
-                        if (!hiddenBosses.includes(bossId)) {
-                             card.style.display = 'none'; // 直接隱藏
+                    const card = el.closest('.card');
+                    if (card) {
+                        if (!showHidden) {
+                            const bossId = card.dataset.id;
+                            if (!hiddenBosses.includes(bossId)) {
+                                 card.style.display = 'none';
+                            }
+                        } else {
+                            bossContainer.appendChild(card);
                         }
-                    } else {
-                        // 移至列表底部
-                        bossContainer.appendChild(card);
                     }
+                } else {
+                    const hours = Math.floor(diff / 3600000);
+                    const minutes = Math.floor((diff % 3600000) / 60000);
+                    const seconds = Math.floor((diff % 60000) / 1000);
+                    el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 }
-            } else {
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
-                el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }
         });
     }, 1000);
@@ -579,12 +600,16 @@ function renderEventManagerList() {
     eventListContainer.innerHTML = '';
     const sortedEvents = Object.values(allEventsData).sort((a, b) => new Date(b.modified) - new Date(a.modified));
     sortedEvents.forEach(event => {
+        if (!event) return; // Add a guard clause for null/undefined events
         const item = document.createElement('div');
         item.className = 'event-list-item';
         if (event.deleted) item.classList.add('deleted');
+
+        const daysText = Array.isArray(event.days) ? event.days.join(', ') : '未設定';
+
         item.innerHTML = `
             <div class="event-item-info">
-                <strong>${event.name}</strong> (${event.time}) - [${event.days.join(', ')}]
+                <strong>${event.name || '未命名'}</strong> (${event.time || '未知時間'}) - [${daysText}]
             </div>
             <div class="event-item-actions">
                 <button class="edit-event-btn">編輯</button>
@@ -596,7 +621,18 @@ function renderEventManagerList() {
         eventListContainer.appendChild(item);
     });
 }
-function fillEventForm(eventId) { const event = allEventsData[eventId]; eventIdInput.value = event.id; eventNameInput.value = event.name; eventTimeInput.value = event.time; eventNotifyInput.value = event.notify_minutes; const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); checkboxes.forEach(cb => { cb.checked = event.days.includes(cb.value); }); }
+function fillEventForm(eventId) { 
+    const event = allEventsData[eventId]; 
+    if (!event) return; // Guard clause
+    eventIdInput.value = event.id || ''; 
+    eventNameInput.value = event.name || ''; 
+    eventTimeInput.value = event.time || ''; 
+    eventNotifyInput.value = event.notify_minutes || 0; 
+    const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); 
+    checkboxes.forEach(cb => { 
+        cb.checked = Array.isArray(event.days) && event.days.includes(cb.value); 
+    }); 
+}
 function resetEventForm() { eventForm.reset(); eventIdInput.value = ''; const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); checkboxes.forEach(cb => cb.checked = false); }
 async function handleEventFormSubmit(event) {
     event.preventDefault();
