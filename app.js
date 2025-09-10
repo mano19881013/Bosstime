@@ -1,6 +1,6 @@
-// app.js (★加入 BOSS 提前 3 分鐘通知功能版)
+// app.js (★診斷版本：顯示詳細錯誤訊息)
 
-// --- 設定區 ---
+// --- 設定區 (省略，與之前相同) ---
 const GITHUB_USER = 'mano19881013';
 const GITHUB_REPO = 'Bosstime';
 const GITHUB_BRANCH = 'main';
@@ -196,131 +196,28 @@ const GAME_PROFILE_DATA = {
     }
   ]
 };
-// **** 我們不再需要這些 GitHub URL 了 ****
-// const TIMERS_DATA_URL = `https://raw.githubusercontent.com/...`;
-// const CUSTOM_EVENTS_URL = `https://raw.githubusercontent.com/...`;
 
-// --- 全域變數 ---
+// --- 全域變數 & DOM 元素 (省略，與之前相同) ---
 let countdownInterval;
 let hiddenBosses = [];
 let showHidden = false;
 let allEventsData = {};
 let allProfileData = {};
-
-// --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
-const modalOverlay = document.getElementById('edit-modal-overlay');
-const modal = document.getElementById('edit-modal');
-const modalBossName = document.getElementById('modal-boss-name');
-const editForm = document.getElementById('edit-form');
-const timeInput = document.getElementById('time-input');
-const cancelBtn = document.getElementById('cancel-btn');
-const saveBtn = document.getElementById('save-btn');
-const modalFeedback = document.getElementById('modal-feedback');
-const modalMessage = document.getElementById('modal-message');
-const toggleHiddenBtn = document.getElementById('toggle-hidden-btn');
-const manageEventsBtn = document.getElementById('manage-events-btn');
-const eventManagerOverlay = document.getElementById('event-manager-overlay');
-const eventForm = document.getElementById('event-form');
-const eventIdInput = document.getElementById('event-id-input');
-const eventNameInput = document.getElementById('event-name-input');
-const eventTimeInput = document.getElementById('event-time-input');
-const eventDaysCheckboxes = document.getElementById('event-days-checkboxes');
-const eventNotifyInput = document.getElementById('event-notify-input');
-const eventCancelBtn = document.getElementById('event-cancel-btn');
-const closeEventManagerBtn = document.getElementById('close-event-manager-btn');
-const eventListContainer = document.getElementById('event-list-container');
+// ...其他元素...
 
-
-// --- 初始化 ---
-document.addEventListener('DOMContentLoaded', () => {
-    requestNotificationPermission();
-    loadSettings();
-    loadAllData();
-    setupEventListeners();
-    createDayCheckboxes();
-});
-
-// --- 通知功能 ---
-function requestNotificationPermission() {
-    if (!("Notification" in window)) {
-        console.log("這個瀏覽器不支援桌面通知。");
-        return;
-    }
-    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                console.log("通知權限已獲得！");
-            }
-        });
-    }
-}
-
-function scheduleNotifications(items) {
-    if (Notification.permission !== "granted") {
-        return;
-    }
-    const now = new Date().getTime();
-    items.forEach(item => {
-        if (item.dateTime && item.notify_minutes && item.notify_minutes > 0) {
-            const notifyTime = item.dateTime.getTime() - (item.notify_minutes * 60 * 1000);
-            if (notifyTime > now) {
-                const delay = notifyTime - now;
-                setTimeout(() => {
-                    new Notification(`${item.name} 即將開始！`, {
-                        body: `事件將於 ${item.notify_minutes} 分鐘後（${item.time}）開始。`,
-                    });
-                }, delay);
-            }
-        }
-    });
-}
-
-// --- 核心函式 ---
-const createDateTime = (dateStr, timeStr) => {
-    if (!dateStr || !timeStr || timeStr === '待確認') return null;
-    return new Date(`${dateStr}T${timeStr}`);
-};
-
-function setupEventListeners() {
-    editForm.addEventListener('submit', handleFormSubmit);
-    cancelBtn.addEventListener('click', closeEditModal);
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) closeEditModal();
-    });
-    toggleHiddenBtn.addEventListener('click', toggleShowHidden);
-    manageEventsBtn.addEventListener('click', openEventManager);
-    closeEventManagerBtn.addEventListener('click', closeEventManager);
-    eventManagerOverlay.addEventListener('click', (e) => {
-        if (e.target === eventManagerOverlay) closeEventManager();
-    });
-    eventForm.addEventListener('submit', handleEventFormSubmit);
-    eventCancelBtn.addEventListener('click', resetEventForm);
-    timeInput.addEventListener('input', formatTimeInput);
-}
-
-function loadSettings() {
-    hiddenBosses = JSON.parse(localStorage.getItem('hiddenBosses') || '[]');
-    showHidden = JSON.parse(localStorage.getItem('showHidden') || 'false');
-    updateToggleButton();
-}
-
-function saveHiddenBosses() {
-    localStorage.setItem('hiddenBosses', JSON.stringify(hiddenBosses));
-}
-
-function saveShowHidden() {
-    localStorage.setItem('showHidden', JSON.stringify(showHidden));
-}
-
+// **** 核心修改處 ****
 async function loadAllData() {
     bossContainer.innerHTML = '<p class="loading">正在讀取資料...</p>';
     try {
         allProfileData = GAME_PROFILE_DATA;
 
         const response = await fetch('/.netlify/functions/getData');
+        
+        // 增加對 response 狀態的檢查
         if (!response.ok) {
-            throw new Error(`伺服器錯誤: ${response.statusText}`);
+            // 丟出一個包含狀態碼的錯誤，方便診斷
+            throw new Error(`伺服器回應錯誤，狀態碼: ${response.status} ${response.statusText}`);
         }
         
         const data = await response.json();
@@ -328,36 +225,39 @@ async function loadAllData() {
         const eventsData = data.eventsData;
         
         allEventsData = eventsData;
-        renderCombinedList(allProfileData, timersData, eventsData);
+        // renderCombinedList(allProfileData, timersData, eventsData); // 暫時不渲染列表
+        bossContainer.innerHTML = '<h2 style="color: green;">診斷模式：資料獲取成功！</h2><p>如果在 LINE 中看到此訊息，表示網路請求正常，問題可能在後續渲染。但在一般瀏覽器看到此訊息是正常的。</p>';
+
     } catch (error) {
         console.error('載入資料時發生錯誤:', error);
-        bossContainer.innerHTML = '<p style="color: red;">資料載入失敗，請檢查網路連線或伺服器狀態。</p>';
+        
+        // **** 主要修改：將詳細錯誤訊息直接顯示在畫面上 ****
+        let errorMessage = '<h2>發生錯誤</h2>';
+        errorMessage += '<p>很抱歉，在 LINE 中載入資料時遇到問題。</p>';
+        errorMessage += '<p>請將以下灰色區塊的錯誤訊息截圖回報：</p>';
+        errorMessage += '<div style="background-color:#eee; border:1px solid #ccc; padding:10px; font-family:monospace; word-wrap:break-word; text-align: left;">';
+        errorMessage += `<strong>錯誤類型 (Name):</strong> ${error.name}<br><br>`;
+        errorMessage += `<strong>錯誤訊息 (Message):</strong> ${error.message}<br><br>`;
+        errorMessage += `<strong>堆疊追蹤 (Stack):</strong><br>${(error.stack || 'N/A').replace(/\n/g, '<br>')}`;
+        errorMessage += '</div>';
+
+        bossContainer.innerHTML = errorMessage;
     }
 }
 
+// 為了簡化診斷，暫時將其他函式保留，但主要關注 loadAllData
+// ... 貼上您之前版本 app.js 的所有其他函式 ...
+// --- 初始化 ---
+document.addEventListener('DOMContentLoaded', () => {
+    // requestNotificationPermission(); // 暫時關閉
+    // loadSettings(); // 暫時關閉
+    loadAllData();
+    // setupEventListeners(); // 暫時關閉
+    // createDayCheckboxes(); // 暫時關閉
+});
 
-function renderCombinedList(profile, timers, events) {
-    bossContainer.innerHTML = '';
-    const now = new Date();
-    let combinedList = processAndCombineData(profile, timers, events, now);
-    scheduleNotifications(combinedList);
-    if (!showHidden) {
-        combinedList = combinedList.filter(item => !(item.itemType === 'boss' && hiddenBosses.includes(item.id)));
-    }
-    const upcomingOnlyList = combinedList.filter(item => {
-        if (item.itemType === 'event' && item.dateTime < now) {
-            return false;
-        }
-        return true;
-    });
-    upcomingOnlyList.forEach(item => {
-        const card = createCardElement(item);
-        bossContainer.appendChild(card);
-    });
-    const upcomingForCountdown = upcomingOnlyList.filter(item => item.dateTime && item.dateTime >= now);
-    startCountdownTimers(upcomingForCountdown);
-}
-
+// ... (請確保貼上其他所有函式，例如 createCardElement, processAndCombineData 等)
+// (此處省略以節省篇幅，但您的檔案中需要包含它們)
 function processAndCombineData(profile, timers, events, now) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const todayStrFull = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -406,266 +306,4 @@ function processAndCombineData(profile, timers, events, now) {
 
     return combinedList;
 }
-
-function createCardElement(item) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.dataset.id = item.id;
-    if (item.itemType === 'boss') {
-        if (item.isEditable) card.classList.add('editable');
-        if (item.level >= 62) card.classList.add('high-level');
-        if (hiddenBosses.includes(item.id)) card.classList.add('is-hidden-item');
-    } else {
-        card.classList.add('event-card');
-    }
-    const isHidden = hiddenBosses.includes(item.id);
-    const subInfoHTML = `<div class="sub-info">${item.itemType === 'boss' ? item.label : (Array.isArray(item.days) ? item.days.join(', ') : '未設定')}</div>`;
-    const toggleButtonHTML = item.itemType === 'boss' ? `
-        <button class="card-toggle-btn ${isHidden ? 'restore-btn' : 'hide-btn'}" title="${isHidden ? '恢復' : '隱藏'}">
-            ${isHidden ? '⊕' : '✕'}
-        </button>
-    ` : '';
-    
-    let displayDate = '';
-    if (item.date && item.date !== '每日固定') {
-        displayDate = item.date.substring(5);
-    }
-
-    let timeDisplayHTML = `<div class="time-display ${item.time === '待確認' ? 'status-pending' : 'status-confirmed'}">${item.time}</div>`;
-    
-    if (item.dateTime && new Date(item.dateTime) >= new Date()) {
-        timeDisplayHTML += `<div class="date-display" data-countdown-to="${item.dateTime.toISOString()}">--:--:--</div>`;
-    } else {
-        timeDisplayHTML += `<div class="date-display">${displayDate}</div>`;
-    }
-
-    card.innerHTML = `
-        ${toggleButtonHTML}
-        <div class="info">
-            <div class="name">${item.name}</div>
-            ${subInfoHTML}
-        </div>
-        <div class="time-info">
-            ${timeDisplayHTML}
-        </div>
-    `;
-    if (item.isEditable) {
-        card.querySelector('.info').addEventListener('click', () => openEditModal(item.id, item.name, item.time));
-        card.querySelector('.time-info').addEventListener('click', () => openEditModal(item.id, item.name, item.time));
-    }
-    const toggleBtn = card.querySelector('.card-toggle-btn');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isHidden ? handleUnhideClick(item.id) : handleHideClick(item.id);
-        });
-    }
-    return card;
-}
-
-function startCountdownTimers(items) {
-    if (countdownInterval) clearInterval(countdownInterval);
-    countdownInterval = setInterval(() => {
-        items.forEach(item => {
-            const el = document.querySelector(`.card[data-id="${item.id}"] .date-display`);
-            if (el) {
-                const targetDate = new Date(item.dateTime);
-                const now = new Date();
-                const diff = targetDate - now;
-
-                if (diff <= 0) {
-                    el.textContent = "已出現";
-                    const card = el.closest('.card');
-                    if (card) {
-                        if (!showHidden) {
-                            const bossId = card.dataset.id;
-                            if (!hiddenBosses.includes(bossId)) {
-                                 card.style.display = 'none';
-                            }
-                        } else {
-                            bossContainer.appendChild(card);
-                        }
-                    }
-                } else {
-                    const hours = Math.floor(diff / 3600000);
-                    const minutes = Math.floor((diff % 3600000) / 60000);
-                    const seconds = Math.floor((diff % 60000) / 1000);
-                    el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                }
-            }
-        });
-    }, 1000);
-}
-
-function openEditModal(bossId, bossName, currentTime) { modal.dataset.editingId = bossId; modalBossName.textContent = bossName; timeInput.value = currentTime !== '待確認' ? currentTime : ''; modalOverlay.classList.remove('hidden'); timeInput.focus(); }
-function closeEditModal() { modalOverlay.classList.add('hidden'); modalFeedback.classList.add('hidden'); saveBtn.disabled = false; timeInput.disabled = false; }
-async function handleFormSubmit(event) {
-    event.preventDefault();
-    const bossId = modal.dataset.editingId;
-    const newTime = timeInput.value;
-
-    const timeRegex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-    if (!newTime || !timeRegex.test(newTime)) {
-        alert('請輸入有效的時間格式 (HH:MM)，例如 09:30 或 22:00。');
-        return;
-    }
-
-    // --- 樂觀更新 (Optimistic UI Update) ---
-    closeEditModal(); // 立即關閉視窗
-
-    const cardToUpdate = document.querySelector(`.card[data-id="${bossId}"]`);
-    if (!cardToUpdate) return;
-
-    const timeDisplay = cardToUpdate.querySelector('.time-display');
-    const countdownDisplay = cardToUpdate.querySelector('.date-display');
-
-    // 儲存原始狀態，用於更新失敗時還原
-    const originalTime = timeDisplay.textContent;
-    const originalCountdownHTML = countdownDisplay.innerHTML;
-    const originalCountdownAttr = countdownDisplay.getAttribute('data-countdown-to');
-    const originalTimeClasses = timeDisplay.className;
-
-    // 模擬後端的日期計算邏輯
-    const bossProfile = allProfileData.timers.find(boss => boss.id === bossId);
-    let finalDayOffset = 0;
-    const now = new Date();
-    if (bossProfile && bossProfile.capture_day_offset) {
-        finalDayOffset = bossProfile.capture_day_offset;
-    } else {
-        const reportedTimeToday = new Date();
-        const [hours, minutes] = newTime.split(':');
-        reportedTimeToday.setHours(hours, minutes, 0, 0);
-        if (reportedTimeToday < now) {
-            finalDayOffset = 1; // 已過時間，算隔天
-        } else {
-            finalDayOffset = 0; // 未過時間，算今天
-        }
-    }
-    const newRespawnDate = new Date();
-    newRespawnDate.setDate(newRespawnDate.getDate() + finalDayOffset);
-    const [newHours, newMinutes] = newTime.split(':');
-    newRespawnDate.setHours(newHours, newMinutes, 0, 0);
-
-    // 立即更新 UI
-    timeDisplay.textContent = newTime;
-    timeDisplay.className = 'time-display status-confirmed';
-    countdownDisplay.setAttribute('data-countdown-to', newRespawnDate.toISOString());
-    // --- 樂觀更新結束 ---
-
-    try {
-        const response = await fetch('/.netlify/functions/update-timer', {
-            method: 'POST',
-            body: JSON.stringify({ bossId, time: newTime }),
-            headers: { 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-            throw new Error(`伺服器錯誤: ${response.statusText}`);
-        }
-        // 更新成功，UI 已是最新，故不做任何事
-        console.log(`Successfully updated ${bossId}`);
-    } catch (error) {
-        console.error('更新失敗:', error);
-        // 更新失敗，還原 UI
-        timeDisplay.textContent = originalTime;
-        timeDisplay.className = originalTimeClasses;
-        countdownDisplay.innerHTML = originalCountdownHTML;
-        if (originalCountdownAttr) {
-            countdownDisplay.setAttribute('data-countdown-to', originalCountdownAttr);
-        } else {
-            countdownDisplay.removeAttribute('data-countdown-to');
-        }
-        // 提示使用者
-        alert(`更新 ${bossProfile ? bossProfile.name : 'BOSS'} 的時間失敗，請檢查網路或稍後再試。`);
-    }
-}
-function showModalMessage(message, type) { modalMessage.textContent = message; modalMessage.className = type; }
-function handleHideClick(bossId) { if (!hiddenBosses.includes(bossId)) { hiddenBosses.push(bossId); saveHiddenBosses(); document.querySelector(`.card[data-id="${bossId}"]`).style.display = 'none'; } }
-function handleUnhideClick(bossId) { hiddenBosses = hiddenBosses.filter(id => id !== bossId); saveHiddenBosses(); loadAllData(); }
-function toggleShowHidden() { showHidden = !showHidden; saveShowHidden(); updateToggleButton(); loadAllData(); }
-function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS'; }
-
-function formatTimeInput(e) {
-    let input = e.target.value.replace(/\D/g, ''); // 移除非數字字元
-    if (input.length > 4) {
-        input = input.slice(0, 4);
-    }
-
-    let formattedInput = '';
-    if (input.length > 2) {
-        formattedInput = input.slice(0, 2) + ':' + input.slice(2);
-    } else {
-        formattedInput = input;
-    }
-
-    e.target.value = formattedInput;
-}
-
-function openEventManager() { renderEventManagerList(); resetEventForm(); eventManagerOverlay.classList.remove('hidden'); }
-function closeEventManager() { eventManagerOverlay.classList.add('hidden'); }
-
-function renderEventManagerList() {
-    eventListContainer.innerHTML = '';
-    const sortedEvents = Object.values(allEventsData)
-        .filter(event => event && !event.deleted)
-        .sort((a, b) => new Date(b.modified) - new Date(a.modified));
-    
-    sortedEvents.forEach(event => {
-        const item = document.createElement('div');
-        item.className = 'event-list-item';
-
-        const daysText = Array.isArray(event.days) ? event.days.join(', ') : '未設定';
-
-        item.innerHTML = `
-            <div class="event-item-info">
-                <strong>${event.name || '未命名'}</strong> (${event.time || '未知時間'}) - [${daysText}]
-            </div>
-            <div class="event-item-actions">
-                <button class="edit-event-btn">編輯</button>
-                <button class="toggle-delete-event-btn">刪除</button>
-            </div>
-        `;
-        item.querySelector('.edit-event-btn').addEventListener('click', () => fillEventForm(event.id));
-        item.querySelector('.toggle-delete-event-btn').addEventListener('click', () => toggleEventDeleted(event.id, true));
-        eventListContainer.appendChild(item);
-    });
-}
-
-function fillEventForm(eventId) { 
-    const event = allEventsData[eventId]; 
-    if (!event) return;
-    eventIdInput.value = event.id || ''; 
-    eventNameInput.value = event.name || ''; 
-    eventTimeInput.value = event.time || ''; 
-    eventNotifyInput.value = event.notify_minutes || 0; 
-    const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); 
-    checkboxes.forEach(cb => { 
-        cb.checked = Array.isArray(event.days) && event.days.includes(cb.value); 
-    }); 
-}
-function resetEventForm() { eventForm.reset(); eventIdInput.value = ''; const checkboxes = document.querySelectorAll('#event-days-checkboxes input'); checkboxes.forEach(cb => cb.checked = false); }
-async function handleEventFormSubmit(event) {
-    event.preventDefault();
-    const eventId = eventIdInput.value;
-    const selectedDays = [...document.querySelectorAll('#event-days-checkboxes input:checked')].map(cb => cb.value);
-    if (selectedDays.length === 0) { alert('請至少選擇一個重複日！'); return; }
-    const eventData = { name: eventNameInput.value, time: eventTimeInput.value, days: selectedDays, notify_minutes: parseInt(eventNotifyInput.value) || 0, };
-    const endpoint = eventId ? '/.netlify/functions/update-event' : '/.netlify/functions/create-event';
-    const body = eventId ? { eventId, updatedData: eventData } : eventData;
-    try {
-        const response = await fetch(endpoint, { method: 'POST', body: JSON.stringify(body) });
-        if (!response.ok) throw new Error('伺服器錯誤');
-        alert('事件儲存成功！');
-        resetEventForm();
-        await loadAllData();
-        renderEventManagerList();
-    } catch (error) { alert('事件儲存失敗！'); console.error(error); }
-}
-async function toggleEventDeleted(eventId, shouldDelete) {
-    try {
-        const response = await fetch('/.netlify/functions/delete-event', { method: 'POST', body: JSON.stringify({ eventId, shouldDelete }) });
-        if (!response.ok) throw new Error('伺服器錯誤');
-        await loadAllData();
-        renderEventManagerList();
-    } catch (error) { alert('操作失敗！'); console.error(error); }
-}
-function createDayCheckboxes() { const days = ['每日', '日', '一', '二', '三', '四', '五', '六']; days.forEach(day => { const div = document.createElement('div'); div.innerHTML = `<label><input type="checkbox" value="${day}"> ${day}</label>`; eventDaysCheckboxes.appendChild(div); }); }
+//... and so on for all other functions
