@@ -313,13 +313,11 @@ function saveShowHidden() {
     localStorage.setItem('showHidden', JSON.stringify(showHidden));
 }
 
-// **** 修改過的核心函式 ****
 async function loadAllData() {
     bossContainer.innerHTML = '<p class="loading">正在讀取資料...</p>';
     try {
         allProfileData = GAME_PROFILE_DATA;
 
-        // 只需一次 fetch，呼叫我們自己的後端 function
         const response = await fetch('/.netlify/functions/getData');
         if (!response.ok) {
             throw new Error(`伺服器錯誤: ${response.statusText}`);
@@ -389,13 +387,21 @@ function processAndCombineData(profile, timers, events, now) {
 
     const combinedList = [...allBosses, ...allEvents];
 
+    // **** 全新的排序邏輯 ****
     combinedList.sort((a, b) => {
-        if (a.dateTime && b.dateTime) {
-            return a.dateTime - b.dateTime;
-        }
-        if (a.dateTime) return -1;
-        if (b.dateTime) return 1;
-        return 0;
+        // 規則 1: 沒有時間的排最後
+        if (!a.dateTime) return 1;
+        if (!b.dateTime) return -1;
+
+        const isAPast = a.dateTime < now;
+        const isBPast = b.dateTime < now;
+
+        // 規則 2: 未來的排在過去的前面
+        if (isAPast && !isBPast) return 1; // a 已過去，b 未來，a 往後排
+        if (!isAPast && isBPast) return -1; // a 未來，b 已過去，a 往前排
+
+        // 規則 3: 如果都在未來或都在過去，則按時間先後排序
+        return a.dateTime - b.dateTime;
     });
 
     return combinedList;
@@ -597,16 +603,13 @@ function formatTimeInput(e) {
 function openEventManager() { renderEventManagerList(); resetEventForm(); eventManagerOverlay.classList.remove('hidden'); }
 function closeEventManager() { eventManagerOverlay.classList.add('hidden'); }
 
-// **** 修改過的函式 ****
 function renderEventManagerList() {
     eventListContainer.innerHTML = '';
-    // 新增 .filter(event => !event.deleted) 來過濾掉已刪除的事件
     const sortedEvents = Object.values(allEventsData)
         .filter(event => event && !event.deleted)
         .sort((a, b) => new Date(b.modified) - new Date(a.modified));
     
     sortedEvents.forEach(event => {
-        // 現在迴圈內的 event 肯定不是 undefined 或 deleted
         const item = document.createElement('div');
         item.className = 'event-list-item';
 
@@ -622,14 +625,14 @@ function renderEventManagerList() {
             </div>
         `;
         item.querySelector('.edit-event-btn').addEventListener('click', () => fillEventForm(event.id));
-        item.querySelector('.toggle-delete-event-btn').addEventListener('click', () => toggleEventDeleted(event.id, true)); // 直接設為刪除
+        item.querySelector('.toggle-delete-event-btn').addEventListener('click', () => toggleEventDeleted(event.id, true));
         eventListContainer.appendChild(item);
     });
 }
 
 function fillEventForm(eventId) { 
     const event = allEventsData[eventId]; 
-    if (!event) return; // Guard clause
+    if (!event) return;
     eventIdInput.value = event.id || ''; 
     eventNameInput.value = event.name || ''; 
     eventTimeInput.value = event.time || ''; 
