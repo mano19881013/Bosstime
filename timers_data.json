@@ -6,10 +6,10 @@
     "is_predicted": false
   },
   "boss_02": {
-    "time": "15:10",
-    "date": "2025-09-16",
-    "modified": "2025-09-16T05:21:33.249377+00:00",
-    "is_predicted": false
+    "time": "03:14",
+    "date": "2025-09-17",
+    "modified": "2025-09-16T07:15:38.118247+00:00",
+    "is_predicted": true
   },
   "boss_03": {
     "time": "19:18",
@@ -18,10 +18,10 @@
     "is_predicted": true
   },
   "boss_04": {
-    "time": "15:12",
-    "date": "2025-09-16",
-    "modified": "2025-09-16T05:21:50.103994+00:00",
-    "is_predicted": false
+    "time": "03:15",
+    "date": "2025-09-17",
+    "modified": "2025-09-16T07:15:49.260914+00:00",
+    "is_predicted": true
   },
   "boss_05": {
     "time": "15:21",
@@ -84,9 +84,9 @@
     "is_predicted": true
   },
   "boss_5d332052": {
-    "time": "15:08",
-    "date": "2025-09-16",
-    "modified": "2025-09-16T06:52:01.043790+00:00",
-    "is_predicted": false
+    "time": "03:14",
+    "date": "2025-09-17",
+    "modified": "2025-09-16T07:15:25.572250+00:00",
+    "is_predicted": true
   }
 }
