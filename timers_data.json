@@ -2,26 +2,26 @@
   "boss_01": {
     "time": "09:59",
     "date": "2025-09-17",
-    "modified": "2025-09-16T13:29:29.860419+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:03.759469+00:00",
+    "is_predicted": false
   },
   "boss_02": {
     "time": "03:14",
     "date": "2025-09-17",
-    "modified": "2025-09-16T07:15:38.118247+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:05.796124+00:00",
+    "is_predicted": false
   },
   "boss_03": {
     "time": "01:19",
     "date": "2025-09-17",
-    "modified": "2025-09-16T11:20:31.483552+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:09.150097+00:00",
+    "is_predicted": false
   },
   "boss_04": {
     "time": "03:15",
     "date": "2025-09-17",
-    "modified": "2025-09-16T07:15:49.260914+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:11.681442+00:00",
+    "is_predicted": false
   },
   "boss_05": {
     "time": "03:33",
@@ -32,32 +32,32 @@
   "boss_06": {
     "time": "11:43",
     "date": "2025-09-17",
-    "modified": "2025-09-16T09:44:15.494403+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:18.150625+00:00",
+    "is_predicted": false
   },
   "boss_07": {
     "time": "01:16",
     "date": "2025-09-17",
-    "modified": "2025-09-16T08:18:13.136927+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:21.875284+00:00",
+    "is_predicted": false
   },
   "boss_08": {
     "time": "00:22",
     "date": "2025-09-17",
-    "modified": "2025-09-15T16:24:06.764573+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:23.858585+00:00",
+    "is_predicted": false
   },
   "boss_09": {
-    "time": "23:24",
-    "date": "2025-09-16",
-    "modified": "2025-09-15T20:16:09.374922+00:00",
+    "time": "23:25",
+    "date": "2025-09-17",
+    "modified": "2025-09-16T15:31:26.244705+00:00",
     "is_predicted": false
   },
   "boss_10": {
     "time": "00:24",
     "date": "2025-09-17",
-    "modified": "2025-09-15T16:24:23.134932+00:00",
-    "is_predicted": true
+    "modified": "2025-09-16T15:31:29.121389+00:00",
+    "is_predicted": false
   },
   "boss_11": {
     "time": "00:55",
