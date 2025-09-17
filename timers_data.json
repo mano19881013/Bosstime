@@ -1,9 +1,9 @@
 {
   "boss_01": {
-    "time": "09:59",
+    "time": "23:30",
     "date": "2025-09-17",
-    "modified": "2025-09-16T15:31:03.759469+00:00",
-    "is_predicted": false
+    "modified": "2025-09-17T02:00:52.229807+00:00",
+    "is_predicted": true
   },
   "boss_02": {
     "time": "15:16",
