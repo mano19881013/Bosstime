@@ -80,13 +80,13 @@
   "boss_14": {
     "time": "01:57",
     "date": "2025-09-18",
-    "modified": "2025-09-17T05:57:27.076368+00:00",
-    "is_predicted": true
+    "modified": "2025-09-17T17:19:06.756761+00:00",
+    "is_predicted": false
   },
   "boss_5d332052": {
     "time": "03:35",
     "date": "2025-09-18",
-    "modified": "2025-09-17T07:37:57.406450+00:00",
-    "is_predicted": true
+    "modified": "2025-09-17T17:19:09.742691+00:00",
+    "is_predicted": false
   }
 }
