@@ -1,9 +1,9 @@
 {
   "boss_01": {
-    "time": "13:01",
-    "date": "2025-09-18",
-    "modified": "2025-09-17T17:18:27.604277+00:00",
-    "is_predicted": false
+    "time": "02:32",
+    "date": "2025-09-19",
+    "modified": "2025-09-18T05:03:40.119166+00:00",
+    "is_predicted": true
   },
   "boss_02": {
     "time": "15:19",
@@ -60,10 +60,10 @@
     "is_predicted": false
   },
   "boss_11": {
-    "time": "12:59",
-    "date": "2025-09-18",
-    "modified": "2025-09-17T17:18:52.258990+00:00",
-    "is_predicted": false
+    "time": "01:00",
+    "date": "2025-09-19",
+    "modified": "2025-09-18T05:03:25.281350+00:00",
+    "is_predicted": true
   },
   "boss_12": {
     "time": "21:52",
