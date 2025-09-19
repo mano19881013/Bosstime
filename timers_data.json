@@ -44,14 +44,14 @@
   "boss_08": {
     "time": "00:26",
     "date": "2025-09-20",
-    "modified": "2025-09-18T16:28:32.902862+00:00",
-    "is_predicted": true
+    "modified": "2025-09-19T13:58:11.687283+00:00",
+    "is_predicted": false
   },
   "boss_09": {
     "time": "23:27",
     "date": "2025-09-19",
-    "modified": "2025-09-18T15:28:21.582019+00:00",
-    "is_predicted": true
+    "modified": "2025-09-19T13:58:13.194214+00:00",
+    "is_predicted": false
   },
   "boss_10": {
     "time": "00:28",
