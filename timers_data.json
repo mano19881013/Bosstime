@@ -6,10 +6,10 @@
     "is_predicted": false
   },
   "boss_02": {
-    "time": "03:24",
+    "time": "15:25",
     "date": "2025-09-20",
-    "modified": "2025-09-19T13:58:02.451081+00:00",
-    "is_predicted": false
+    "modified": "2025-09-19T19:26:20.183472+00:00",
+    "is_predicted": true
   },
   "boss_03": {
     "time": "08:24",
@@ -18,10 +18,10 @@
     "is_predicted": true
   },
   "boss_04": {
-    "time": "03:26",
+    "time": "15:27",
     "date": "2025-09-20",
-    "modified": "2025-09-19T13:58:05.559080+00:00",
-    "is_predicted": false
+    "modified": "2025-09-19T19:27:40.182073+00:00",
+    "is_predicted": true
   },
   "boss_05": {
     "time": "04:08",
