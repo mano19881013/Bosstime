@@ -12,10 +12,10 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "08:24",
+    "time": "14:25",
     "date": "2025-09-20",
-    "modified": "2025-09-19T22:50:33.892393+00:00",
-    "is_predicted": false
+    "modified": "2025-09-20T00:25:57.002392+00:00",
+    "is_predicted": true
   },
   "boss_04": {
     "time": "15:27",
