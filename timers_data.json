@@ -12,9 +12,9 @@
     "is_predicted": true
   },
   "boss_03": {
-    "time": "08:45",
+    "time": "14:45",
     "date": "2025-09-22",
-    "modified": "2025-09-21T18:50:01.861547+00:00",
+    "modified": "2025-09-22T00:45:34.942769+00:00",
     "is_predicted": true
   },
   "boss_04": {
@@ -84,9 +84,9 @@
     "is_predicted": true
   },
   "boss_5d332052": {
-    "time": "09:24",
+    "time": "21:36",
     "date": "2025-09-22",
-    "modified": "2025-09-21T19:33:31.786859+00:00",
-    "is_predicted": false
+    "modified": "2025-09-22T01:36:41.663040+00:00",
+    "is_predicted": true
   }
 }
