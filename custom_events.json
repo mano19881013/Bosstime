@@ -197,17 +197,18 @@
       "五",
       "日"
     ],
-    "modified": "2025-09-08T14:43:29.814586+00:00",
+    "modified": "2025-09-23T08:48:21.474648+00:00",
     "deleted": false,
-    "id": "襲擊王_1757339343"
+    "id": "襲擊王_1757339343",
+    "include_in_summary": true
   },
   "raid_boss_schedule": {
-    "schedule_generated_week": 37,
+    "schedule_generated_week": 38,
     "weekly_schedule": {
-      "3": "B",
-      "5": "A",
-      "7": "B",
-      "1": "A"
+      "3": "A",
+      "5": "B",
+      "7": "A",
+      "1": "B"
     }
   },
   "暗影戰場_1753054235": {
