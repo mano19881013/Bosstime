@@ -416,5 +416,20 @@
     ],
     "modified": "2025-07-19T09:10:44.088585+00:00",
     "deleted": true
+  },
+  "火山王_1758617461": {
+    "name": "火山王",
+    "time": "19:10",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "include_in_summary": true,
+    "days": [
+      "三",
+      "日"
+    ],
+    "modified": "2025-09-23T08:51:01.216512+00:00",
+    "deleted": false,
+    "id": "火山王_1758617461"
   }
 }
