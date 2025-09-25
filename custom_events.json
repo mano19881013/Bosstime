@@ -112,7 +112,7 @@
   "暗影戰場_1752918654": {
     "id": "暗影戰場_1752918654",
     "name": "暗影戰場",
-    "time": "21:35",
+    "time": "20:35",
     "notify_minutes": 5,
     "repeat_interval": 3,
     "is_perpetual": false,
@@ -120,8 +120,9 @@
       "四",
       "日"
     ],
-    "modified": "2025-07-31T13:24:24.393329+00:00",
-    "deleted": false
+    "modified": "2025-09-25T11:11:39.936997+00:00",
+    "deleted": false,
+    "include_in_summary": false
   },
   "試煉-4樓_1757248818": {
     "name": "試煉-4樓",
