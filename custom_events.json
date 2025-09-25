@@ -141,15 +141,16 @@
   "襲擊戰_1752918430": {
     "id": "襲擊戰_1752918430",
     "name": "襲擊戰",
-    "time": "22:00",
+    "time": "21:00",
     "notify_minutes": 1,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
       "每日"
     ],
-    "modified": "2025-07-19T09:47:10.606311+00:00",
-    "deleted": false
+    "modified": "2025-09-25T11:11:50.513920+00:00",
+    "deleted": false,
+    "include_in_summary": false
   },
   "試煉-6樓_1757248844": {
     "name": "試煉-1樓6樓",
