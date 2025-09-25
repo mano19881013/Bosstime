@@ -169,7 +169,7 @@
   "暗影戰場_1753185662": {
     "id": "暗影戰場_1753185662",
     "name": "暗影戰場",
-    "time": "21:05",
+    "time": "20:05",
     "notify_minutes": 5,
     "repeat_interval": 3,
     "is_perpetual": false,
@@ -177,8 +177,9 @@
       "四",
       "日"
     ],
-    "modified": "2025-07-31T13:24:35.282592+00:00",
-    "deleted": false
+    "modified": "2025-09-25T11:12:09.776135+00:00",
+    "deleted": false,
+    "include_in_summary": false
   },
   "襲擊戰結束_1755521608": {
     "name": "襲擊戰結束",
