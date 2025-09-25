@@ -435,5 +435,19 @@
     "modified": "2025-09-23T08:51:01.216512+00:00",
     "deleted": false,
     "id": "火山王_1758617461"
+  },
+  "世界Boss_1758800143": {
+    "name": "世界Boss",
+    "time": "23:00",
+    "notify_minutes": 8,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "include_in_summary": false,
+    "days": [
+      "每日"
+    ],
+    "modified": "2025-09-25T11:35:43.634776+00:00",
+    "deleted": false,
+    "id": "世界Boss_1758800143"
   }
 }
