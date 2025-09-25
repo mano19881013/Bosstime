@@ -14,7 +14,7 @@
   },
   "試煉-1樓5樓_1757248770": {
     "name": "試煉-1樓5樓",
-    "time": "23:00",
+    "time": "22:00",
     "notify_minutes": 10,
     "repeat_interval": 0,
     "is_perpetual": false,
@@ -22,7 +22,7 @@
       "一",
       "五"
     ],
-    "modified": "2025-09-23T08:48:41.112176+00:00",
+    "modified": "2025-09-25T11:10:02.705966+00:00",
     "deleted": false,
     "id": "試煉-1樓5樓_1757248770",
     "include_in_summary": true
@@ -208,12 +208,12 @@
     "include_in_summary": true
   },
   "raid_boss_schedule": {
-    "schedule_generated_week": 38,
+    "schedule_generated_week": 39,
     "weekly_schedule": {
-      "3": "A",
-      "5": "B",
-      "7": "A",
-      "1": "B"
+      "3": "B",
+      "5": "A",
+      "7": "B",
+      "1": "A"
     }
   },
   "暗影戰場_1753054235": {
