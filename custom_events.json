@@ -169,15 +169,15 @@
   "暗影戰場_1753185662": {
     "id": "暗影戰場_1753185662",
     "name": "暗影戰場",
-    "time": "20:05",
-    "notify_minutes": 5,
-    "repeat_interval": 3,
+    "time": "20:00",
+    "notify_minutes": 3,
+    "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
       "四",
       "日"
     ],
-    "modified": "2025-09-28T12:25:14.175971+00:00",
+    "modified": "2025-09-28T12:27:43.496255+00:00",
     "deleted": false,
     "include_in_summary": true
   },
