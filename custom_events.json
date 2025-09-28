@@ -113,14 +113,14 @@
     "id": "暗影戰場_1752918654",
     "name": "暗影戰場",
     "time": "20:30",
-    "notify_minutes": 5,
+    "notify_minutes": 3,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
       "四",
       "日"
     ],
-    "modified": "2025-09-28T12:27:25.247822+00:00",
+    "modified": "2025-09-28T12:27:32.234004+00:00",
     "deleted": false,
     "include_in_summary": true
   },
