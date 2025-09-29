@@ -13,15 +13,15 @@
     "deleted": false
   },
   "試煉-1樓5樓_1757248770": {
-    "name": "試煉-1樓",
+    "name": "試煉-5樓",
     "time": "22:00",
     "notify_minutes": 10,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
-      "一"
+      "五"
     ],
-    "modified": "2025-09-29T12:39:56.773927+00:00",
+    "modified": "2025-09-29T12:40:12.699297+00:00",
     "deleted": false,
     "id": "試煉-1樓5樓_1757248770",
     "include_in_summary": true
