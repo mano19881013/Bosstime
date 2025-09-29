@@ -448,5 +448,19 @@
     "modified": "2025-09-25T11:35:43.634776+00:00",
     "deleted": false,
     "id": "世界Boss_1758800143"
+  },
+  "試煉-1樓_1759149636": {
+    "name": "試煉-1樓",
+    "time": "22:00",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "include_in_summary": true,
+    "days": [
+      "一"
+    ],
+    "modified": "2025-09-29T12:40:36.948482+00:00",
+    "deleted": false,
+    "id": "試煉-1樓_1759149636"
   }
 }
