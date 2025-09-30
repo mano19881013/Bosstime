@@ -92,8 +92,9 @@
     "days": [
       "二"
     ],
-    "modified": "2025-07-19T09:47:59.066308+00:00",
-    "deleted": false
+    "modified": "2025-09-30T12:06:26.683929+00:00",
+    "deleted": false,
+    "include_in_summary": true
   },
   "襲擊戰_1752918407": {
     "id": "襲擊戰_1752918407",
