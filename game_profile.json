@@ -39,7 +39,18 @@
       "level": 62,
       "label": "LV.62",
       "name": "EZ-09",
-      "type": "floating"
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_62c553e2",
+      "level": 63,
+      "label": "LV.63",
+      "name": "布萊登",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
     },
     {
       "id": "boss_05",
@@ -53,14 +64,18 @@
       "level": 68,
       "label": "LV.68",
       "name": "哈尼文",
-      "type": "floating"
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
     },
     {
       "id": "boss_07",
       "level": 72,
       "label": "LV.72",
       "name": "維瑟斯",
-      "type": "floating"
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
     },
     {
       "id": "boss_08",
@@ -160,14 +175,6 @@
       "name": "泰米爾",
       "type": "fixed",
       "time": "22:00"
-    },
-    {
-      "id": "fixed_07",
-      "level": 63,
-      "label": "LV.63",
-      "name": "布萊登",
-      "type": "fixed",
-      "time": "23:00"
     },
     {
       "id": "boss_5d332052",
