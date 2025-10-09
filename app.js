@@ -28,8 +28,8 @@ const GAME_PROFILE_DATA = {
     { "id": "fixed_04", "level": 40, "label": "LV.40", "name": "亞爾貢", "type": "fixed", "time": "18:00" },
     { "id": "fixed_05", "level": 45, "label": "LV.45", "name": "博卡頓", "type": "fixed", "time": "20:00" },
     { "id": "fixed_06", "level": 48, "label": "LV.48", "name": "泰米爾", "type": "fixed", "time": "22:00" },
-        { "id": "boss_5d332052", "level": 112, "label": "LV.112", "name": "索尼安", "type": "floating", "time": "", "capture_day_offset": 1 }
-    { "id": "boss_15", "level": 63 "label": "LV.63", "name": "布萊登", "type": "floating", "time": "", "capture_day_offset": 1 }
+    { "id": "boss_5d332052", "level": 112, "label": "LV.112", "name": "索尼安", "type": "floating", "time": "", "capture_day_offset": 1 }
+    { "id": "boss_62c553e2", "level": 63 "label": "LV.63", "name": "布萊登", "type": "floating", "time": "", "capture_day_offset": 1 }
   ],
   "filters": [ { "label": "全部", "min_level": 0 }, { "label": "LV.62+", "min_level": 62 } ]
 };
