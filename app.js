@@ -1,37 +1,205 @@
-// app.js (★已過去的浮動BOSS顯示為待確認)
+// app.js (★已修正並同步 game_profile.json 的 Boss 清單)
 
 // --- 設定區 ---
-const GITHUB_USER = 'mano19881013';
-const GITHUB_REPO = 'Bosstime';
-const GITHUB_BRANCH = 'main';
+// GAME_PROFILE_DATA 現在包含了來自 game_profile.json 的最新、最正確的 Boss 列表
 const GAME_PROFILE_DATA = {
   "game_name": "Boss計時器V3.0",
-  "cloud_settings": { "repo_user": "mano19881013", "repo_name": "Bosstime", "timers_file": "timers_data.json", "events_file": "custom_events.json" },
+  "cloud_settings": {
+    "repo_user": "mano19881013",
+    "repo_name": "Bosstime",
+    "timers_file": "timers_data.json",
+    "events_file": "custom_events.json"
+  },
   "timers": [
-    { "id": "boss_01", "level": 50, "label": "LV.50", "name": "武庫拉", "type": "floating", "time": "", "capture_day_offset": 1 },
-    { "id": "boss_02", "level": 55, "label": "LV.55", "name": "格里貢", "type": "floating", "time": "", "capture_day_offset": 1 },
-    { "id": "boss_03", "level": 60, "label": "LV.60", "name": "帕洛提斯", "type": "floating", "time": "", "capture_day_offset": 1 },
-    { "id": "boss_04", "level": 62, "label": "LV.62", "name": "EZ-09", "type": "floating" },
-    { "id": "boss_05", "level": 65, "label": "LV.65", "name": "普魯特", "type": "floating" },
-    { "id": "boss_06", "level": 68, "label": "LV.68", "name": "哈尼文", "type": "floating" },
-    { "id": "boss_07", "level": 72, "label": "LV.72", "name": "維瑟斯", "type": "floating" },
-    { "id": "boss_08", "level": 77, "label": "LV.77", "name": "佩爾", "type": "floating" },
-    { "id": "boss_09", "level": 78, "label": "LV.78", "name": "亞拉金", "type": "floating" },
-    { "id": "boss_10", "level": 85, "label": "LV.85", "name": "卡威因", "type": "floating" },
-    { "id": "boss_11", "level": 87, "label": "LV.87", "name": "厄瑞玻斯", "type": "floating" },
-    { "id": "boss_12", "level": 90, "label": "LV.90", "name": "拉頓的幻影", "type": "floating", "time": "", "capture_day_offset": 2 },
-    { "id": "boss_13", "level": 94, "label": "LV.94", "name": "雷斯", "type": "floating" },
-    { "id": "boss_14", "level": 104, "label": "LV.104", "name": "希歐多爾", "type": "floating" },
-    { "id": "fixed_01", "level": 25, "label": "LV.25", "name": "埃奇納德", "type": "fixed", "time": "12:00" },
-    { "id": "fixed_02", "level": 30, "label": "LV.30", "name": "斯吉拉", "type": "fixed", "time": "14:00" },
-    { "id": "fixed_03", "level": 35, "label": "LV.35", "name": "蜥蜴人國王", "type": "fixed", "time": "16:00" },
-    { "id": "fixed_04", "level": 40, "label": "LV.40", "name": "亞爾貢", "type": "fixed", "time": "18:00" },
-    { "id": "fixed_05", "level": 45, "label": "LV.45", "name": "博卡頓", "type": "fixed", "time": "20:00" },
-    { "id": "fixed_06", "level": 48, "label": "LV.48", "name": "泰米爾", "type": "fixed", "time": "22:00" },
-    { "id": "boss_5d332052", "level": 112, "label": "LV.112", "name": "索尼安", "type": "floating", "time": "", "capture_day_offset": 1 },
-    { "id": "boss_62c553e2", "level": 63 "label": "LV.63", "name": "布萊登", "type": "floating", "time": "", "capture_day_offset": 1 }
+    {
+      "id": "boss_01",
+      "level": 50,
+      "label": "LV.50",
+      "name": "武庫拉",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_02",
+      "level": 55,
+      "label": "LV.55",
+      "name": "格里貢",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_03",
+      "level": 60,
+      "label": "LV.60",
+      "name": "帕洛提斯",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_04",
+      "level": 62,
+      "label": "LV.62",
+      "name": "EZ-09",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_62c553e2",
+      "level": 63,
+      "label": "LV.63",
+      "name": "布萊登",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_05",
+      "level": 65,
+      "label": "LV.65",
+      "name": "普魯特",
+      "type": "floating"
+    },
+    {
+      "id": "boss_06",
+      "level": 68,
+      "label": "LV.68",
+      "name": "哈尼文",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_07",
+      "level": 72,
+      "label": "LV.72",
+      "name": "維瑟斯",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    },
+    {
+      "id": "boss_08",
+      "level": 77,
+      "label": "LV.77",
+      "name": "佩爾",
+      "type": "floating"
+    },
+    {
+      "id": "boss_09",
+      "level": 78,
+      "label": "LV.78",
+      "name": "亞拉金",
+      "type": "floating"
+    },
+    {
+      "id": "boss_10",
+      "level": 85,
+      "label": "LV.85",
+      "name": "卡威因",
+      "type": "floating"
+    },
+    {
+      "id": "boss_11",
+      "level": 87,
+      "label": "LV.87",
+      "name": "厄瑞玻斯",
+      "type": "floating"
+    },
+    {
+      "id": "boss_12",
+      "level": 90,
+      "label": "LV.90",
+      "name": "拉頓的幻影",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 2
+    },
+    {
+      "id": "boss_13",
+      "level": 94,
+      "label": "LV.94",
+      "name": "雷斯",
+      "type": "floating"
+    },
+    {
+      "id": "boss_14",
+      "level": 104,
+      "label": "LV.104",
+      "name": "希歐多爾",
+      "type": "floating"
+    },
+    {
+      "id": "fixed_01",
+      "level": 25,
+      "label": "LV.25",
+      "name": "埃奇納德",
+      "type": "fixed",
+      "time": "12:00"
+    },
+    {
+      "id": "fixed_02",
+      "level": 30,
+      "label": "LV.30",
+      "name": "斯吉拉",
+      "type": "fixed",
+      "time": "14:00"
+    },
+    {
+      "id": "fixed_03",
+      "level": 35,
+      "label": "LV.35",
+      "name": "蜥蜴人國王",
+      "type": "fixed",
+      "time": "16:00"
+    },
+    {
+      "id": "fixed_04",
+      "level": 40,
+      "label": "LV.40",
+      "name": "亞爾貢",
+      "type": "fixed",
+      "time": "18:00"
+    },
+    {
+      "id": "fixed_05",
+      "level": 45,
+      "label": "LV.45",
+      "name": "博卡頓",
+      "type": "fixed",
+      "time": "20:00"
+    },
+    {
+      "id": "fixed_06",
+      "level": 48,
+      "label": "LV.48",
+      "name": "泰米爾",
+      "type": "fixed",
+      "time": "22:00"
+    },
+    {
+      "id": "boss_5d332052",
+      "level": 112,
+      "label": "LV.112",
+      "name": "索尼安",
+      "type": "floating",
+      "time": "",
+      "capture_day_offset": 1
+    }
   ],
-  "filters": [ { "label": "全部", "min_level": 0 }, { "label": "LV.62+", "min_level": 62 } ]
+  "filters": [
+    {
+      "label": "全部",
+      "min_level": 0
+    },
+    {
+      "label": "LV.62+",
+      "min_level": 62
+    }
+  ]
 };
 
 // --- 全域變數 ---
@@ -174,7 +342,6 @@ function startCountdownTimers() {
     }, 1000);
 }
 
-// **** 核心修改處 ****
 function processAndCombineData(profile, timers, events, now) {
     const todayStrFull = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
