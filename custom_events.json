@@ -462,5 +462,19 @@
     ],
     "modified": "2025-07-19T09:20:05.631564+00:00",
     "deleted": true
+  },
+  "試煉-5樓_1761823089": {
+    "name": "試煉-5樓",
+    "time": "22:00",
+    "notify_minutes": 10,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "include_in_summary": true,
+    "days": [
+      "日"
+    ],
+    "modified": "2025-10-30T11:18:09.613561+00:00",
+    "deleted": false,
+    "id": "試煉-5樓_1761823089"
   }
 }
