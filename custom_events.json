@@ -477,5 +477,20 @@
     "modified": "2025-10-30T11:18:09.613561+00:00",
     "deleted": false,
     "id": "試煉-5樓_1761823089"
+  },
+  "虛空裂縫_1761823205": {
+    "name": "虛空裂縫",
+    "time": "17:10",
+    "notify_minutes": 3,
+    "repeat_interval": 0,
+    "is_perpetual": false,
+    "include_in_summary": true,
+    "days": [
+      "一",
+      "四"
+    ],
+    "modified": "2025-10-30T11:20:05.399647+00:00",
+    "deleted": false,
+    "id": "虛空裂縫_1761823205"
   }
 }
