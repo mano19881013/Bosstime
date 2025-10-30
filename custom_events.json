@@ -152,7 +152,7 @@
     "include_in_summary": false
   },
   "試煉-6樓_1757248844": {
-    "name": "試煉-6樓",
+    "name": "試煉-1樓7樓",
     "time": "22:00",
     "notify_minutes": 10,
     "repeat_interval": 0,
@@ -160,7 +160,7 @@
     "days": [
       "六"
     ],
-    "modified": "2025-09-29T12:43:54.800482+00:00",
+    "modified": "2025-10-30T11:17:19.894526+00:00",
     "deleted": false,
     "id": "試煉-6樓_1757248844",
     "include_in_summary": true
