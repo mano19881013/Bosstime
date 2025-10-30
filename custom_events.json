@@ -124,7 +124,7 @@
     "include_in_summary": true
   },
   "試煉-4樓_1757248818": {
-    "name": "試煉-4樓",
+    "name": "試煉-2樓",
     "time": "22:00",
     "notify_minutes": 10,
     "repeat_interval": 0,
@@ -132,7 +132,7 @@
     "days": [
       "四"
     ],
-    "modified": "2025-10-30T11:16:24.971371+00:00",
+    "modified": "2025-10-30T11:16:38.026163+00:00",
     "deleted": false,
     "id": "試煉-4樓_1757248818",
     "include_in_summary": true
