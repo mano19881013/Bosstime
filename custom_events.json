@@ -41,16 +41,15 @@
     "include_in_summary": true
   },
   "試煉-1樓5樓_1757248669": {
-    "name": "試煉-2樓",
+    "name": "試煉-2樓4樓",
     "time": "22:00",
     "notify_minutes": 10,
     "repeat_interval": 0,
     "is_perpetual": false,
     "days": [
-      "二",
-      "四"
+      "二"
     ],
-    "modified": "2025-09-25T11:10:43.826243+00:00",
+    "modified": "2025-10-30T11:13:14.684415+00:00",
     "deleted": false,
     "id": "試煉-1樓5樓_1757248669",
     "include_in_summary": true
@@ -212,7 +211,7 @@
     "include_in_summary": true
   },
   "raid_boss_schedule": {
-    "schedule_generated_week": 41,
+    "schedule_generated_week": 44,
     "weekly_schedule": {
       "3": "B",
       "5": "A",
