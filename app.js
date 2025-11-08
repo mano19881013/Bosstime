@@ -1,4 +1,4 @@
-// app.js (★ 升級版：包含 3 分鐘提醒 + 高品質語音)
+// app.js (★ 升級版：包含 3 分鐘提醒 + 高品質語音 + 重複播放兩次)
 
 // --- 設定區 ---
 // GAME_PROFILE_DATA 現在包含了來自 game_profile.json 的最新、最正確的 Boss 列表
@@ -209,8 +209,8 @@ let showHidden = false;
 let allEventsData = {};
 let allProfileData = {};
 let isReloading = false; 
-let isMuted = true; // ★★★ 新增：音效狀態 (預設靜音) ★★★
-let preferredVoice = null; // ★★★ 新增：儲存偏好的語音 ★★★
+let isMuted = true; // 音效狀態 (預設靜音)
+let preferredVoice = null; // 儲存偏好的語音
 
 // --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
@@ -293,7 +293,7 @@ function createCardElement(item) {
     const now = new Date();
     if (item.dateTime && item.dateTime >= now) {
         dateDisplayDiv.dataset.countdownTo = item.dateTime.toISOString();
-        dateDisplayDiv.dataset.itemName = item.name; // ★★★ 修改：儲存名稱以供語音使用 ★★★
+        dateDisplayDiv.dataset.itemName = item.name; // 儲存名稱以供語音使用
         dateDisplayDiv.textContent = '--:--:--';
     } else {
         dateDisplayDiv.textContent = (item.date && item.date !== '每日固定') ? item.date.substring(5) : '';
@@ -328,7 +328,7 @@ function startCountdownTimers() {
             const diffMs = targetDate - now; // 剩餘毫秒
             const diffSeconds = Math.floor(diffMs / 1000); // 剩餘總秒數
 
-            // ★★★ 修改：通知邏輯 (Start) ★★★
+            // 通知邏輯 (Start)
             const notifyTimeInSeconds = 180; // 3 分鐘 = 180 秒
             const hasNotified = el.dataset.notified === 'true';
 
@@ -341,7 +341,7 @@ function startCountdownTimers() {
                 
                 playNotificationSound(notificationText); // 播放語音！
             }
-            // ★★★ 修改：通知邏輯 (End) ★★★
+            // 通知邏輯 (End)
 
             if (diffMs <= 0) { // 使用 diffMs 判斷是否到期
                 el.textContent = "已出現";
@@ -426,7 +426,7 @@ function loadSettings() {
 
 function saveHiddenBosses() { localStorage.setItem('hiddenBosses', JSON.stringify(hiddenBosses)); }
 function saveShowHidden() { localStorage.setItem('showHidden', JSON.stringify(showHidden)); }
-function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS'; }
+function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱NDAY的 BOSS' : '顯示已隱藏的 BOSS'; }
 
 function setupEventListeners() {
     if (editForm) {
@@ -438,7 +438,7 @@ function setupEventListeners() {
     if (toggleHiddenBtn) toggleHiddenBtn.addEventListener('click', toggleShowHidden);
     if (manageEventsBtn) manageEventsBtn.addEventListener('click', () => alert('事件管理功能尚未啟用。'));
 
-    // ★★★ 修改：綁定音效按鈕 ★★★
+    // 綁定音效按鈕
     const toggleAudioBtn = document.getElementById('toggle-audio-btn');
     if (toggleAudioBtn) toggleAudioBtn.addEventListener('click', toggleAudio);
 }
@@ -497,7 +497,7 @@ function formatTimeInput(e) {
 }
 
 
-// ★★★ 新增：升級版語音功能 (Start) ★★★
+// --- 升級版語音功能 (Start) ---
 
 function toggleAudio() {
     isMuted = !isMuted;
@@ -556,16 +556,29 @@ function playNotificationSound(text) {
     }
 
     window.speechSynthesis.cancel(); // 清除佇列，避免延遲
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'zh-TW';
-    utterance.rate = 1.0;
     
-    // ★ 核心：如果我們有找到偏好的語音, 就使用它 ★
+    // ★★★ 修改：建立兩個語音實例來播放兩次 (Start) ★★★
+    
+    // 第一次
+    const utterance1 = new SpeechSynthesisUtterance(text);
+    utterance1.lang = 'zh-TW';
+    utterance1.rate = 1.0;
     if (preferredVoice) {
-        utterance.voice = preferredVoice;
+        utterance1.voice = preferredVoice;
+    }
+
+    // 第二次
+    const utterance2 = new SpeechSynthesisUtterance(text);
+    utterance2.lang = 'zh-TW';
+    utterance2.rate = 1.0;
+    if (preferredVoice) {
+        utterance2.voice = preferredVoice;
     }
     
-    window.speechSynthesis.speak(utterance);
+    // 依序將它們放入播放佇列
+    window.speechSynthesis.speak(utterance1);
+    window.speechSynthesis.speak(utterance2);
+    // ★★★ 修改：建立兩個語音實例來播放兩次 (End) ★★★
 }
 
-// ★★★ 新增：升級版語音功能 (End) ★★★
+// --- 升級版語音功能 (End) ---
