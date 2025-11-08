@@ -1,4 +1,4 @@
-// app.js (★已修正並同步 game_profile.json 的 Boss 清單)
+// app.js (★ 升級版：包含 3 分鐘提醒 + 高品質語音)
 
 // --- 設定區 ---
 // GAME_PROFILE_DATA 現在包含了來自 game_profile.json 的最新、最正確的 Boss 列表
@@ -209,6 +209,8 @@ let showHidden = false;
 let allEventsData = {};
 let allProfileData = {};
 let isReloading = false; 
+let isMuted = true; // ★★★ 新增：音效狀態 (預設靜音) ★★★
+let preferredVoice = null; // ★★★ 新增：儲存偏好的語音 ★★★
 
 // --- DOM 元素 ---
 const bossContainer = document.getElementById('boss-timers-container');
@@ -291,6 +293,7 @@ function createCardElement(item) {
     const now = new Date();
     if (item.dateTime && item.dateTime >= now) {
         dateDisplayDiv.dataset.countdownTo = item.dateTime.toISOString();
+        dateDisplayDiv.dataset.itemName = item.name; // ★★★ 修改：儲存名稱以供語音使用 ★★★
         dateDisplayDiv.textContent = '--:--:--';
     } else {
         dateDisplayDiv.textContent = (item.date && item.date !== '每日固定') ? item.date.substring(5) : '';
@@ -318,12 +321,29 @@ function startCountdownTimers() {
     if (countdownInterval) clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
         const countdownElements = document.querySelectorAll('[data-countdown-to]');
+        const now = new Date(); // 將 'now' 移到迴圈外層
+
         countdownElements.forEach(el => {
             const targetDate = new Date(el.dataset.countdownTo);
-            const now = new Date();
-            const diff = targetDate - now;
+            const diffMs = targetDate - now; // 剩餘毫秒
+            const diffSeconds = Math.floor(diffMs / 1000); // 剩餘總秒數
 
-            if (diff <= 0) {
+            // ★★★ 修改：通知邏輯 (Start) ★★★
+            const notifyTimeInSeconds = 180; // 3 分鐘 = 180 秒
+            const hasNotified = el.dataset.notified === 'true';
+
+            // 檢查是否 剛好 進入 3 分鐘內 且 尚未通知過
+            if (diffSeconds > 0 && diffSeconds <= notifyTimeInSeconds && !hasNotified) {
+                el.dataset.notified = 'true'; // 標記為已通知 (避免重複播放)
+                
+                const itemName = el.dataset.itemName || '事件'; // 取得剛才儲存的名稱
+                const notificationText = `三分鐘後 ${itemName} 通知`;
+                
+                playNotificationSound(notificationText); // 播放語音！
+            }
+            // ★★★ 修改：通知邏輯 (End) ★★★
+
+            if (diffMs <= 0) { // 使用 diffMs 判斷是否到期
                 el.textContent = "已出現";
                 el.removeAttribute('data-countdown-to');
                 
@@ -333,9 +353,10 @@ function startCountdownTimers() {
                     isReloading = true;
                 }
             } else {
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
+                // 使用 diffSeconds 計算
+                const hours = Math.floor(diffSeconds / 3600);
+                const minutes = Math.floor((diffSeconds % 3600) / 60);
+                const seconds = diffSeconds % 60;
                 el.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             }
         });
@@ -416,6 +437,10 @@ function setupEventListeners() {
     }
     if (toggleHiddenBtn) toggleHiddenBtn.addEventListener('click', toggleShowHidden);
     if (manageEventsBtn) manageEventsBtn.addEventListener('click', () => alert('事件管理功能尚未啟用。'));
+
+    // ★★★ 修改：綁定音效按鈕 ★★★
+    const toggleAudioBtn = document.getElementById('toggle-audio-btn');
+    if (toggleAudioBtn) toggleAudioBtn.addEventListener('click', toggleAudio);
 }
 
 function openEditModal(bossId, bossName, currentTime) { 
@@ -470,3 +495,77 @@ function formatTimeInput(e) {
     else input = input;
     e.target.value = input;
 }
+
+
+// ★★★ 新增：升級版語音功能 (Start) ★★★
+
+function toggleAudio() {
+    isMuted = !isMuted;
+    const toggleAudioBtn = document.getElementById('toggle-audio-btn');
+    if (toggleAudioBtn) {
+        toggleAudioBtn.textContent = isMuted ? '開啟音效' : '關閉音效';
+    }
+
+    // 這是為了喚醒某些瀏覽器(尤其是手機)的語音功能
+    if (!isMuted) {
+        // 第一次點擊時，主動載入並尋找最佳語音
+        loadBestVoice(); 
+        playNotificationSound('音效已開啟');
+    }
+}
+
+function loadBestVoice() {
+    // 如果已經找過了，或是不支援語音，就返回
+    if (preferredVoice || !('speechSynthesis' in window)) return;
+
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+        // 瀏覽器尚未載入語音清單, 我們監聽 "voiceschanged" 事件
+        window.speechSynthesis.onvoiceschanged = () => {
+            const allVoices = window.speechSynthesis.getVoices();
+            // 優先找 Google 的中文語音 (品質最高)
+            preferredVoice = allVoices.find(voice => 
+                voice.lang === 'zh-TW' && voice.name.includes('Google')
+            );
+
+            // 如果沒有 Google 語音, 找任何可用的 zh-TW 語音
+            if (!preferredVoice) {
+                preferredVoice = allVoices.find(voice => voice.lang === 'zh-TW');
+            }
+        };
+        return;
+    }
+
+    // 語音清單已載入, 直接尋找
+    preferredVoice = voices.find(voice => 
+        voice.lang === 'zh-TW' && voice.name.includes('Google')
+    );
+    if (!preferredVoice) {
+        preferredVoice = voices.find(voice => voice.lang === 'zh-TW');
+    }
+}
+
+function playNotificationSound(text) {
+    if (isMuted || !('speechSynthesis' in window)) {
+        return;
+    }
+    
+    // 確保我們有載入過語音 (如果使用者一開始就開啟音效)
+    if (!preferredVoice) {
+        loadBestVoice();
+    }
+
+    window.speechSynthesis.cancel(); // 清除佇列，避免延遲
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-TW';
+    utterance.rate = 1.0;
+    
+    // ★ 核心：如果我們有找到偏好的語音, 就使用它 ★
+    if (preferredVoice) {
+        utterance.voice = preferredVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+// ★★★ 新增：升級版語音功能 (End) ★★★
