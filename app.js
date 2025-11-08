@@ -1,4 +1,4 @@
-// app.js (★ 升級版：包含 3 分鐘提醒 + 高品質語音 + 重複播放兩次)
+// app.js (★ 升級版：修正同時通知 + 重複播放兩次)
 
 // --- 設定區 ---
 // GAME_PROFILE_DATA 現在包含了來自 game_profile.json 的最新、最正確的 Boss 列表
@@ -339,7 +339,8 @@ function startCountdownTimers() {
                 const itemName = el.dataset.itemName || '事件'; // 取得剛才儲存的名稱
                 const notificationText = `三分鐘後 ${itemName} 通知`;
                 
-                playNotificationSound(notificationText); // 播放語音！
+                // ★★★ 呼叫時不要清除佇列 (false) ★★★
+                playNotificationSound(notificationText, false); 
             }
             // 通知邏輯 (End)
 
@@ -426,7 +427,7 @@ function loadSettings() {
 
 function saveHiddenBosses() { localStorage.setItem('hiddenBosses', JSON.stringify(hiddenBosses)); }
 function saveShowHidden() { localStorage.setItem('showHidden', JSON.stringify(showHidden)); }
-function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱NDAY的 BOSS' : '顯示已隱藏的 BOSS'; }
+function updateToggleButton() { toggleHiddenBtn.textContent = showHidden ? '隱藏已隱藏的 BOSS' : '顯示已隱藏的 BOSS'; }
 
 function setupEventListeners() {
     if (editForm) {
@@ -506,37 +507,29 @@ function toggleAudio() {
         toggleAudioBtn.textContent = isMuted ? '開啟音效' : '關閉音效';
     }
 
-    // 這是為了喚醒某些瀏覽器(尤其是手機)的語音功能
     if (!isMuted) {
-        // 第一次點擊時，主動載入並尋找最佳語音
         loadBestVoice(); 
-        playNotificationSound('音效已開啟');
+        
+        // ★★★ 修改處 1：播放測試音時，要清除佇列 (true) ★★★
+        playNotificationSound('音效已開啟', true); 
     }
 }
 
 function loadBestVoice() {
-    // 如果已經找過了，或是不支援語音，就返回
     if (preferredVoice || !('speechSynthesis' in window)) return;
-
     const voices = window.speechSynthesis.getVoices();
     if (voices.length === 0) {
-        // 瀏覽器尚未載入語音清單, 我們監聽 "voiceschanged" 事件
         window.speechSynthesis.onvoiceschanged = () => {
             const allVoices = window.speechSynthesis.getVoices();
-            // 優先找 Google 的中文語音 (品質最高)
             preferredVoice = allVoices.find(voice => 
                 voice.lang === 'zh-TW' && voice.name.includes('Google')
             );
-
-            // 如果沒有 Google 語音, 找任何可用的 zh-TW 語音
             if (!preferredVoice) {
                 preferredVoice = allVoices.find(voice => voice.lang === 'zh-TW');
             }
         };
         return;
     }
-
-    // 語音清單已載入, 直接尋找
     preferredVoice = voices.find(voice => 
         voice.lang === 'zh-TW' && voice.name.includes('Google')
     );
@@ -545,19 +538,20 @@ function loadBestVoice() {
     }
 }
 
-function playNotificationSound(text) {
+// ★★★ 修改處 2：增加 'shouldCancel' 參數 ★★★
+function playNotificationSound(text, shouldCancel = false) { 
     if (isMuted || !('speechSynthesis' in window)) {
         return;
     }
     
-    // 確保我們有載入過語音 (如果使用者一開始就開啟音效)
     if (!preferredVoice) {
         loadBestVoice();
     }
 
-    window.speechSynthesis.cancel(); // 清除佇列，避免延遲
-    
-    // ★★★ 修改：建立兩個語音實例來播放兩次 (Start) ★★★
+    // ★ 核心修正：只有在需要時才清空佇列 ★
+    if (shouldCancel) {
+        window.speechSynthesis.cancel(); 
+    }
     
     // 第一次
     const utterance1 = new SpeechSynthesisUtterance(text);
@@ -575,10 +569,8 @@ function playNotificationSound(text) {
         utterance2.voice = preferredVoice;
     }
     
-    // 依序將它們放入播放佇列
     window.speechSynthesis.speak(utterance1);
     window.speechSynthesis.speak(utterance2);
-    // ★★★ 修改：建立兩個語音實例來播放兩次 (End) ★★★
 }
 
 // --- 升級版語音功能 (End) ---
