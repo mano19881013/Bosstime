@@ -42,9 +42,9 @@
     "is_predicted": false
   },
   "boss_07": {
-    "time": "18:02",
-    "date": "2025-12-12",
-    "modified": "2025-12-12T01:02:44.857172+00:00",
+    "time": "03:03",
+    "date": "2025-12-13",
+    "modified": "2025-12-12T10:03:45.392819+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -90,9 +90,9 @@
     "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "18:03",
-    "date": "2025-12-12",
-    "modified": "2025-12-11T22:08:44.024631+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2025-12-12T10:03:01.424880+00:00",
     "is_predicted": false
   }
 }
