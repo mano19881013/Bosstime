@@ -6,9 +6,9 @@
     "is_predicted": false
   },
   "boss_02": {
-    "time": "08:39",
+    "time": "20:41",
     "date": "2026-01-11",
-    "modified": "2026-01-10T14:14:08.915137+00:00",
+    "modified": "2026-01-11T02:02:17.153546+00:00",
     "is_predicted": false
   },
   "boss_03": {
@@ -18,9 +18,9 @@
     "is_predicted": false
   },
   "boss_04": {
-    "time": "08:42",
-    "date": "2026-01-11",
-    "modified": "2026-01-10T14:14:32.104936+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.090217+00:00",
     "is_predicted": false
   },
   "boss_62c553e2": {
@@ -36,15 +36,15 @@
     "is_predicted": false
   },
   "boss_06": {
-    "time": "09:29",
-    "date": "2026-01-11",
-    "modified": "2026-01-10T07:30:15.007287+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.090655+00:00",
     "is_predicted": false
   },
   "boss_07": {
-    "time": "09:54",
-    "date": "2026-01-11",
-    "modified": "2026-01-10T16:55:26.960088+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.091038+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -54,15 +54,15 @@
     "is_predicted": false
   },
   "boss_09": {
-    "time": "07:59",
-    "date": "2026-01-11",
-    "modified": "2026-01-09T23:59:54.715432+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.091318+00:00",
     "is_predicted": false
   },
   "boss_10": {
-    "time": "07:57",
-    "date": "2026-01-11",
-    "modified": "2026-01-09T23:57:51.763462+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.091551+00:00",
     "is_predicted": false
   },
   "boss_11": {
@@ -84,15 +84,15 @@
     "is_predicted": false
   },
   "boss_14": {
-    "time": "08:43",
-    "date": "2026-01-11",
-    "modified": "2026-01-10T14:14:54.954880+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.091679+00:00",
     "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "09:12",
-    "date": "2026-01-11",
-    "modified": "2026-01-10T14:15:10.328137+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-11T01:59:59.091768+00:00",
     "is_predicted": false
   }
 }
