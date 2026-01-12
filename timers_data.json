@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "13:34",
-    "date": "2026-01-12",
-    "modified": "2026-01-11T23:35:14.282399+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-12T06:15:03.002988+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -24,15 +24,15 @@
     "is_predicted": false
   },
   "boss_62c553e2": {
-    "time": "11:46",
-    "date": "2026-01-12",
-    "modified": "2026-01-11T09:46:36.441321+00:00",
+    "time": "05:48",
+    "date": "2026-01-13",
+    "modified": "2026-01-12T06:16:13.350798+00:00",
     "is_predicted": false
   },
   "boss_05": {
-    "time": "13:32",
-    "date": "2026-01-12",
-    "modified": "2026-01-12T00:49:20.941573+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-12T06:15:03.003246+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -42,9 +42,9 @@
     "is_predicted": false
   },
   "boss_07": {
-    "time": "13:08",
-    "date": "2026-01-12",
-    "modified": "2026-01-11T20:10:29.938778+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-12T06:15:03.003303+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -66,9 +66,9 @@
     "is_predicted": false
   },
   "boss_11": {
-    "time": "13:24",
-    "date": "2026-01-12",
-    "modified": "2026-01-11T17:29:46.332506+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-12T06:15:03.003366+00:00",
     "is_predicted": false
   },
   "boss_12": {
@@ -78,9 +78,9 @@
     "is_predicted": false
   },
   "boss_13": {
-    "time": "13:28",
-    "date": "2026-01-12",
-    "modified": "2026-01-11T17:30:05.634189+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-12T06:15:03.003487+00:00",
     "is_predicted": false
   },
   "boss_14": {
@@ -90,9 +90,9 @@
     "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "09:20",
-    "date": "2026-01-12",
-    "modified": "2026-01-11T13:31:39.299041+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-01-12T06:15:03.003609+00:00",
     "is_predicted": false
   }
 }
