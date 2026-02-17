@@ -6,9 +6,9 @@
     "is_predicted": false
   },
   "boss_02": {
-    "time": "09:50",
+    "time": "21:51",
     "date": "2026-02-17",
-    "modified": "2026-02-16T13:50:33.900381+00:00",
+    "modified": "2026-02-17T02:07:21.490116+00:00",
     "is_predicted": false
   },
   "boss_03": {
@@ -18,9 +18,9 @@
     "is_predicted": false
   },
   "boss_04": {
-    "time": "09:52",
-    "date": "2026-02-17",
-    "modified": "2026-02-16T13:54:26.459932+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-02-17T02:04:35.546911+00:00",
     "is_predicted": false
   },
   "boss_62c553e2": {
@@ -36,9 +36,9 @@
     "is_predicted": false
   },
   "boss_06": {
-    "time": "09:55",
-    "date": "2026-02-17",
-    "modified": "2026-02-16T07:55:11.693998+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-02-17T02:04:35.547285+00:00",
     "is_predicted": false
   },
   "boss_07": {
@@ -54,15 +54,15 @@
     "is_predicted": false
   },
   "boss_09": {
-    "time": "09:54",
-    "date": "2026-02-17",
-    "modified": "2026-02-16T01:54:24.069007+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-02-17T02:04:35.547382+00:00",
     "is_predicted": false
   },
   "boss_10": {
-    "time": "09:51",
-    "date": "2026-02-17",
-    "modified": "2026-02-16T01:51:09.555428+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-02-17T02:04:35.547420+00:00",
     "is_predicted": false
   },
   "boss_11": {
@@ -78,9 +78,9 @@
     "is_predicted": false
   },
   "boss_13": {
-    "time": "09:59",
-    "date": "2026-02-17",
-    "modified": "2026-02-16T14:03:21.215783+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-02-17T02:04:35.547582+00:00",
     "is_predicted": false
   },
   "boss_14": {
@@ -90,9 +90,9 @@
     "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "10:05",
-    "date": "2026-02-17",
-    "modified": "2026-02-16T14:05:48.490079+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-02-17T02:05:19.896981+00:00",
     "is_predicted": false
   }
 }
