@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "00:26",
+    "time": "06:33",
     "date": "2026-04-14",
-    "modified": "2026-04-13T11:41:03.899721+00:00",
+    "modified": "2026-04-13T16:33:09.645676+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -30,9 +30,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "00:24",
-    "date": "2026-04-14",
-    "modified": "2026-04-13T11:41:09.683781+00:00",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-04-13T16:32:05.315866+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -72,9 +72,9 @@
     "is_predicted": false
   },
   "boss_12": {
-    "time": "22:56",
-    "date": "2026-04-13",
-    "modified": "2026-04-13T15:11:09.071Z",
+    "time": "待確認",
+    "date": "",
+    "modified": "2026-04-13T16:32:05.316295+00:00",
     "is_predicted": false
   },
   "boss_13": {
