@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "04:30",
+    "time": "10:31",
     "date": "2026-05-10",
-    "modified": "2026-05-09T16:21:38.929+00:00",
+    "modified": "2026-05-09T23:25:48.301+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -30,9 +30,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "04:31",
+    "time": "10:34",
     "date": "2026-05-10",
-    "modified": "2026-05-09T16:21:50.066+00:00",
+    "modified": "2026-05-09T23:25:48.301+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -78,21 +78,21 @@
     "is_predicted": false
   },
   "boss_13": {
-    "time": "07:08",
+    "time": "19:08",
     "date": "2026-05-10",
-    "modified": "2026-05-09T11:16:24.992+00:00",
+    "modified": "2026-05-09T23:25:48.301+00:00",
     "is_predicted": false
   },
   "boss_14": {
-    "time": "03:28",
+    "time": "15:30",
     "date": "2026-05-10",
-    "modified": "2026-05-09T11:16:33.008+00:00",
+    "modified": "2026-05-09T23:25:48.301+00:00",
     "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "03:57",
+    "time": "15:57",
     "date": "2026-05-10",
-    "modified": "2026-05-09T11:16:40.675+00:00",
+    "modified": "2026-05-09T23:25:48.301+00:00",
     "is_predicted": false
   },
   "boss_mok6h4dz": {
@@ -102,9 +102,9 @@
     "is_predicted": false
   },
   "boss_mojpzrq0": {
-    "time": "02:52",
+    "time": "16:52",
     "date": "2026-05-10",
-    "modified": "2026-05-09T05:30:20.565+00:00",
+    "modified": "2026-05-09T23:25:48.301+00:00",
     "is_predicted": false
   }
 }
