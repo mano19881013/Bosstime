@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "11:22",
+    "time": "17:24",
     "date": "2026-05-11",
-    "modified": "2026-05-10T22:38:33.295+00:00",
+    "modified": "2026-05-11T03:24:00.482+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -80,7 +80,7 @@
   "boss_13": {
     "time": "21:11",
     "date": "2026-05-11",
-    "modified": "2026-05-11T01:14:57.834Z",
+    "modified": "2026-05-11T01:14:11.171+00:00",
     "is_predicted": false
   },
   "boss_14": {
