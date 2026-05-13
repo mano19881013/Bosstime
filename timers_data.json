@@ -1,8 +1,8 @@
 {
   "boss_01": {
-    "time": "17:58",
-    "date": "2026-05-13",
-    "modified": "2026-05-12T22:23:51.856+00:00",
+    "time": "07:29",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   },
   "boss_02": {
@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "20:58",
-    "date": "2026-05-13",
-    "modified": "2026-05-13T07:23:43.748+00:00",
+    "time": "02:59",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -30,9 +30,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "21:01",
-    "date": "2026-05-13",
-    "modified": "2026-05-13T07:23:43.748+00:00",
+    "time": "03:03",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -42,9 +42,9 @@
     "is_predicted": false
   },
   "boss_07": {
-    "time": "18:31",
-    "date": "2026-05-13",
-    "modified": "2026-05-13T07:23:43.748+00:00",
+    "time": "04:03",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -78,9 +78,9 @@
     "is_predicted": false
   },
   "boss_13": {
-    "time": "21:13",
-    "date": "2026-05-13",
-    "modified": "2026-05-13T07:23:43.748+00:00",
+    "time": "09:17",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   },
   "boss_14": {
@@ -96,15 +96,15 @@
     "is_predicted": false
   },
   "boss_mok6h4dz": {
-    "time": "18:29",
-    "date": "2026-05-13",
-    "modified": "2026-05-12T22:23:51.856+00:00",
+    "time": "08:29",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   },
   "boss_mojpzrq0": {
-    "time": "18:29",
-    "date": "2026-05-13",
-    "modified": "2026-05-12T22:23:51.856+00:00",
+    "time": "08:29",
+    "date": "2026-05-14",
+    "modified": "2026-05-13T13:22:18.222+00:00",
     "is_predicted": false
   }
 }
