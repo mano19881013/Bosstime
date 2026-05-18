@@ -12,9 +12,9 @@
     "is_predicted": false
   },
   "boss_03": {
-    "time": "15:42",
+    "time": "21:44",
     "date": "2026-05-18",
-    "modified": "2026-05-18T03:59:20.285Z",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_04": {
@@ -32,13 +32,13 @@
   "boss_05": {
     "time": "16:11",
     "date": "2026-05-18",
-    "modified": "2026-05-18T03:59:41.198Z",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_06": {
     "time": "03:53",
     "date": "2026-05-19",
-    "modified": "2026-05-18T03:59:32.867Z",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_07": {
@@ -66,9 +66,9 @@
     "is_predicted": false
   },
   "boss_11": {
-    "time": "13:40",
-    "date": "2026-05-18",
-    "modified": "2026-05-17T22:23:36.194+00:00",
+    "time": "01:41",
+    "date": "2026-05-19",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_12": {
@@ -80,31 +80,31 @@
   "boss_13": {
     "time": "21:29",
     "date": "2026-05-18",
-    "modified": "2026-05-18T03:58:57.881Z",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_14": {
     "time": "03:13",
     "date": "2026-05-19",
-    "modified": "2026-05-18T07:14:17.954Z",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_5d332052": {
-    "time": "12:26",
-    "date": "2026-05-18",
-    "modified": "2026-05-17T16:32:59.352+00:00",
+    "time": "00:28",
+    "date": "2026-05-19",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_mok6h4dz": {
-    "time": "10:53",
-    "date": "2026-05-18",
-    "modified": "2026-05-17T13:27:30.924+00:00",
+    "time": "00:53",
+    "date": "2026-05-19",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   },
   "boss_mojpzrq0": {
-    "time": "10:53",
-    "date": "2026-05-18",
-    "modified": "2026-05-17T13:27:30.924+00:00",
+    "time": "00:53",
+    "date": "2026-05-19",
+    "modified": "2026-05-18T08:04:47.647+00:00",
     "is_predicted": false
   }
 }
