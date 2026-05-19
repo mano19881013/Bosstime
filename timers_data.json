@@ -6,21 +6,21 @@
     "is_predicted": false
   },
   "boss_02": {
-    "time": "05:55",
+    "time": "17:57",
     "date": "2026-05-20",
-    "modified": "2026-05-19T11:09:53.759+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_03": {
-    "time": "03:49",
+    "time": "09:51",
     "date": "2026-05-20",
-    "modified": "2026-05-19T16:33:23.494+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_04": {
-    "time": "06:01",
+    "time": "18:02",
     "date": "2026-05-20",
-    "modified": "2026-05-19T11:09:53.759+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_62c553e2": {
@@ -30,9 +30,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "04:24",
+    "time": "10:27",
     "date": "2026-05-20",
-    "modified": "2026-05-19T16:33:23.494+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -42,9 +42,9 @@
     "is_predicted": false
   },
   "boss_07": {
-    "time": "04:36",
+    "time": "13:38",
     "date": "2026-05-20",
-    "modified": "2026-05-19T16:33:23.494+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -66,9 +66,9 @@
     "is_predicted": false
   },
   "boss_11": {
-    "time": "01:42",
+    "time": "13:43",
     "date": "2026-05-20",
-    "modified": "2026-05-19T08:47:22.105+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_12": {
@@ -84,9 +84,9 @@
     "is_predicted": false
   },
   "boss_14": {
-    "time": "03:16",
+    "time": "15:16",
     "date": "2026-05-20",
-    "modified": "2026-05-19T08:47:22.105+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_5d332052": {
@@ -96,15 +96,15 @@
     "is_predicted": false
   },
   "boss_mok6h4dz": {
-    "time": "05:16",
+    "time": "19:16",
     "date": "2026-05-20",
-    "modified": "2026-05-19T08:47:22.105+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   },
   "boss_mojpzrq0": {
-    "time": "05:16",
+    "time": "19:16",
     "date": "2026-05-20",
-    "modified": "2026-05-19T08:47:22.105+00:00",
+    "modified": "2026-05-19T22:31:54.849+00:00",
     "is_predicted": false
   }
 }
