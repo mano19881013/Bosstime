@@ -1,8 +1,8 @@
 {
   "boss_01": {
-    "time": "07:10",
+    "time": "20:42",
     "date": "2026-05-22",
-    "modified": "2026-05-21T14:09:39.972+00:00",
+    "modified": "2026-05-22T04:08:03.762+00:00",
     "is_predicted": false
   },
   "boss_02": {
@@ -30,9 +30,9 @@
     "is_predicted": false
   },
   "boss_05": {
-    "time": "08:54",
+    "time": "14:57",
     "date": "2026-05-22",
-    "modified": "2026-05-21T22:37:31.152+00:00",
+    "modified": "2026-05-22T04:08:03.762+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -42,9 +42,9 @@
     "is_predicted": false
   },
   "boss_07": {
-    "time": "11:44",
+    "time": "20:46",
     "date": "2026-05-22",
-    "modified": "2026-05-21T22:37:31.152+00:00",
+    "modified": "2026-05-22T04:08:03.762+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -78,9 +78,9 @@
     "is_predicted": false
   },
   "boss_13": {
-    "time": "09:48",
+    "time": "21:48",
     "date": "2026-05-22",
-    "modified": "2026-05-21T14:09:39.972+00:00",
+    "modified": "2026-05-22T04:08:03.762+00:00",
     "is_predicted": false
   },
   "boss_14": {
