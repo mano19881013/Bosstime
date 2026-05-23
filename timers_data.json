@@ -2,37 +2,37 @@
   "boss_01": {
     "time": "23:45",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:22:20.094Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_02": {
     "time": "18:06",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:21:18.671Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_03": {
     "time": "16:20",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:20:18.678Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_04": {
     "time": "18:09",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:21:30.731Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_62c553e2": {
     "time": "03:22",
     "date": "2026-05-24",
-    "modified": "2026-05-23T07:21:44.779Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_05": {
     "time": "21:09",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:20:31.953Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_06": {
@@ -44,7 +44,7 @@
   "boss_07": {
     "time": "23:52",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:21:01.838Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_08": {
@@ -68,7 +68,7 @@
   "boss_11": {
     "time": "02:47",
     "date": "2026-05-24",
-    "modified": "2026-05-23T07:22:33.892Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_12": {
@@ -80,31 +80,31 @@
   "boss_13": {
     "time": "21:51",
     "date": "2026-05-23",
-    "modified": "2026-05-23T07:21:57.304Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_14": {
     "time": "03:30",
     "date": "2026-05-24",
-    "modified": "2026-05-23T07:33:29.638Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_5d332052": {
     "time": "02:49",
     "date": "2026-05-24",
-    "modified": "2026-05-23T07:22:45.272Z",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_mok6h4dz": {
-    "time": "04:15",
+    "time": "18:15",
     "date": "2026-05-23",
-    "modified": "2026-05-22T07:20:45.882+00:00",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   },
   "boss_mojpzrq0": {
-    "time": "04:15",
+    "time": "18:15",
     "date": "2026-05-23",
-    "modified": "2026-05-22T07:20:45.882+00:00",
+    "modified": "2026-05-23T07:56:29.002+00:00",
     "is_predicted": false
   }
 }
